@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convoyeur de Tri Automatique - ICAM Grand Paris Sud</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066a1;
+            --secondary: #004080;
+            --accent: #ff6b35;
+            --dark: #0a0a0a;
+            --light: #ffffff;
+            --tech-blue: #00d4ff;
+            --tech-orange: #ff9100;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glow: 0 0 30px rgba(0, 100, 161, 0.5);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Circuit board animation background */
+        .circuit-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .circuit-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: pulse-circuit 3s ease-in-out infinite;
+        }
+
+        .circuit-line.horizontal {
+            width: 200px;
+            height: 2px;
+        }
+
+        .circuit-line.vertical {
+            width: 2px;
+            height: 200px;
+        }
+
+        @keyframes pulse-circuit {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+
+        /* Floating tech icons */
+        .tech-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .tech-particle {
+            position: absolute;
+            color: var(--primary);
+            font-size: 1.5em;
+            opacity: 0.3;
+            animation: float-tech 8s ease-in-out infinite;
+        }
+
+        @keyframes float-tech {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
+            25% { transform: translateY(-20px) rotate(90deg); opacity: 0.5; }
+            50% { transform: translateY(-40px) rotate(180deg); opacity: 0.8; }
+            75% { transform: translateY(-20px) rotate(270deg); opacity: 0.5; }
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--primary);
+            padding: 30px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .header-content img {
+            max-height: 80px;
+            border-radius: 10px;
+            filter: drop-shadow(0 0 10px rgba(0, 102, 161, 0.3));
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+        }
+
+        justifie {
+            text-align: justify;
+        }
+
+        .header-title h1 {
+            font-size: 2.5em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary), var(--tech-orange));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .intro {
+            font-style: italic;
+            color: var(--primary);
+            opacity: 0.9;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(0, 102, 161, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 1px solid var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 10px;
+            padding: 0 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 161, 0.4);
+        }
+
+        /* Sections */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        section {
+            padding: 80px 0;
+            position: relative;
+            scroll-margin-top: 140px; /* Compense le header + nav sticky */
+        }
+
+        section h2 {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary), var(--tech-orange));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-description {
+            text-align: center;
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .tech-section {
+            background: linear-gradient(135deg, rgba(0, 102, 161, 0.02), rgba(255, 145, 0, 0.02));
+            border-top: 1px solid rgba(0, 102, 161, 0.1);
+            border-bottom: 1px solid rgba(0, 102, 161, 0.1);
+        }
+
+        /* Team Section */
+        .team-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 102, 161, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--tech-orange));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover::before {
+            transform: scaleX(1);
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 102, 161, 0.2);
+            border-color: var(--primary);
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover img {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 102, 161, 0.5);
+        }
+
+        .team-member h3 {
+            color: var(--primary);
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .team-member p {
+            color: var(--tech-orange);
+            font-weight: 500;
+        }
+
+        /* Components Grid Styles */
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .component-card {
+            background: linear-gradient(135deg, var(--glass-bg), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .component-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 102, 161, 0.3);
+            border-color: var(--primary);
+        }
+
+        .component-card h3 {
+            color: var(--primary);
+            margin: 15px 0 10px 0;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .component-card p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .component-card img {
+            transition: all 0.3s ease;
+        }
+
+        .component-card img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 102, 161, 0.2);
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 102, 161, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 102, 161, 0.2);
+            border-color: var(--primary);
+        }
+
+        /* Collapsible sections */
+        .collapsible {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            cursor: pointer;
+            padding: 20px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.1em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0, 102, 161, 0.3);
+        }
+
+        .collapsible:hover {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 102, 161, 0.4);
+        }
+
+        .content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 10px 10px;
+        }
+
+        .content.active {
+            padding: 30px;
+            border: 1px solid rgba(0, 102, 161, 0.2);
+            border-top: none;
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 102, 161, 0.3);
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 102, 161, 0.4);
+            border-color: var(--primary);
+        }
+
+        .placeholder-gallery {
+            background: linear-gradient(135deg, var(--glass-bg), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 3em;
+            backdrop-filter: blur(10px);
+        }
+
+        .placeholder-gallery:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 102, 161, 0.3);
+            border-color: var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            animation: modalZoom 0.3s ease-out;
+        }
+
+        @keyframes modalZoom {
+            from { transform: scale(0.1); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            color: #f1f1f1;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        /* Video container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin: 30px 0;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 102, 161, 0.3);
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            min-height: 400px;
+            border-radius: 15px;
+            background: black;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        /* Fullscreen video improvements */
+        .video-container video:fullscreen {
+            object-fit: contain;
+        }
+
+        .video-container video:-webkit-full-screen {
+            object-fit: contain;
+        }
+
+        .video-container video:-moz-full-screen {
+            object-fit: contain;
+        }
+
+        /* Links */
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(0, 102, 161, 0.1);
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        a:hover {
+            background: rgba(0, 102, 161, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 161, 0.3);
+        }
+
+        /* Lists */
+        ul {
+            margin: 20px 0;
+            padding-left: 0;
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 10px 0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+            list-style: none;
+        }
+
+        li:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--primary);
+            padding: 40px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-title h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                gap: 5px;
+                padding: 0 10px;
+            }
+
+            nav ul li a {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            section h2 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            .team-container {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .components-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation delays */
+        .team-member {
+            opacity: 0;
+            transform: translateY(50px);
+            animation: cardAppear 0.6s ease-out forwards;
+        }
+
+        .team-member:nth-child(1) { animation-delay: 0.1s; }
+        .team-member:nth-child(2) { animation-delay: 0.2s; }
+        .team-member:nth-child(3) { animation-delay: 0.3s; }
+        .team-member:nth-child(4) { animation-delay: 0.4s; }
+        .team-member:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Placeholder for missing images */
+        .placeholder-image {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, rgba(0, 102, 161, 0.2), rgba(255, 145, 0, 0.2));
+            border: 2px dashed var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 3em;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Circuit background -->
+    <div class="circuit-bg" id="circuitBg"></div>
+    
+    <!-- Tech particles -->
+    <div class="tech-particles" id="techParticles"></div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="header-content">
+            <!-- Logo ICAM à gauche -->
+            <img src="icam.logo.jpg" 
+                 alt="Logo ICAM" style="width: 80px; height: 80px; border-radius: 10px; object-fit: contain; background: white; padding: 5px; filter: drop-shadow(0 0 10px rgba(0, 102, 161, 0.3));">
+            
+            <!-- Titre du projet au centre -->
+            <div class="header-title">
+                <h1>Convoyeur de Tri Automatique de Déchets</h1>
+                <p class="intro">
+                    Projet d'ingénierie 2024-2025 à l'ICAM Grand Paris Sud, visant à concevoir un segment de convoyeur capable de trier automatiquement les déchets.
+                </p>
+            </div>
+            
+            <!-- Logo de l'équipe à droite -->
+            <img src="notre_logo.png" 
+                 alt="Logo Équipe" style="width: 80px; height: 80px; border-radius: 10px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0, 102, 161, 0.3));">
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav>
+        <ul>
+            <li><a href="#equipe">👥 Équipe</a></li>
+            <li><a href="#objectifs">🎯 Objectifs</a></li>
+            <li><a href="#solutions">💡 Solutions</a></li>
+            <li><a href="#composants">🔧 Composants</a></li>
+            <li><a href="#prototype">📐 Prototype</a></li>
+            <li><a href="#contraintes">⚠️ Contraintes</a></li>
+            <li><a href="#demonstration">🎥 Démonstration</a></li>
+            <li><a href="#budget">💰 Budget</a></li><li><a href="#cahier-des-charges">📄 Cahier des Charges</a></li>
+        </ul>
+    </nav>
+
+    <!-- Team Section -->
+    <section id="equipe">
+        <div class="container">
+            <h2>👥 Notre Équipe</h2>
+            <p class="section-description">Rencontrez les membres de notre équipe pluridisciplinaire</p>
+            
+            <div class="team-container">
+                <!-- Chef de projet -->
+                <div class="team-member">
+                    <img src="ludo.png" 
+                         alt="Ludovic MARCADE" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary);">
+                    <h3>Ludovic MARCADE</h3>
+                    <p>Chef de projet</p>
+                </div>
+                
+                <!-- Responsable de la conception mécanique -->
+                <div class="team-member">
+                    <img src="adrien.png" 
+                         alt="Adrien CARLIER" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary);">
+                    <h3>Adrien CARLIER</h3>
+                    <p>Responsable de la conception mécanique</p>
+                </div>
+                
+                <!-- Conception mécanique -->
+                <div class="team-member">
+                    <img src="romain.png" 
+                         alt="Romain GRISEZ" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary);">
+                    <h3>Romain GRISEZ</h3>
+                    <p>Conception mécanique</p>
+                </div>
+                
+                <!-- Responsable développement électronique -->
+                <div class="team-member">
+                    <img src="clement.png" 
+                         alt="Clément MADORRE" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary);">
+                    <h3>Clément MADORRE</h3>
+                    <p>Responsable développement électronique</p>
+                </div>
+                
+                <!-- Responsable base de données -->
+                <div class="team-member">
+                    <img src="mathis.png" 
+                         alt="Mathis VADEZ" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary);">
+                    <h3>Mathis VADEZ (à internationnal)</h3>
+                    <p>Responsable base de données</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Objectives Section -->
+    <section id="objectifs">
+        <div class="container">
+            <h2>🎯 Objectifs du Projet</h2>
+            <div class="content-card" style="text-align: justify;">
+                <p>
+                    L'objectif principal est de séparer automatiquement les canettes en métal des autres déchets (bouteilles en plastique ou en verre) sur le convoyeur. 
+                    Notre segment de convoyeur doit éjecter les canettes en aluminium hors de la bande pour qu'elles soient traitées à part, 
+                    tandis que les bouteilles, qu'elles soient en plastique ou en verre, continuent vers les étapes de tri suivantes.
+                </p>
+                <p>
+                    Ce projet répond au besoin d'automatiser le tri sélectif afin d'améliorer l'efficacité du recyclage et de réduire la charge de travail manuel. 
+                    Le système doit s'intégrer au début d'une ligne de convoyeurs plus large, en alignant les déchets sur la bande et en effectuant un premier tri par matériau.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Solutions Section -->
+    <section id="solutions" class="tech-section">
+        <div class="container">
+            <h2>💡 Solutions Techniques Envisagées</h2>
+            
+            <button class="collapsible">Approche 1 – Caméra avec IA</button>
+            <div class="content"style="text-align: justify;">
+                <p>
+                    L'utilisation d'une caméra haute résolution couplée à un algorithme d'intelligence artificielle a été étudiée. 
+                    Placée au-dessus du convoyeur, la caméra aurait analysé la forme des déchets pour distinguer une canette d'une bouteille. 
+                    Cette solution promet une identification fine des objets, mais nécessite un matériel coûteux (caméra d'au moins 5 Mégapixels) et un traitement d'image complexe.
+                </p>
+                <p><strong>Avantages:</strong></p>
+                <ul>
+                    <li>Détection précise basée sur la forme et potentiellement la couleur</li>
+                    <li>Capacité d'évolution pour détecter d'autres types de déchets</li>
+                    <li>Aucun contact physique nécessaire avec les déchets</li>
+                </ul>
+                <p><strong>Inconvénients:</strong></p>
+                <ul>
+                    <li>Coût élevé du matériel</li>
+                    <li>Complexité de développement de l'algorithme</li>
+                    <li>Sensibilité aux conditions d'éclairage</li>
+                </ul>
+            </div>
+            
+            <button class="collapsible">Approche 2 – Capteur inductif non-ferreux (Solution retenue)</button>
+            <div class="content"style="text-align: justify;">
+                <p>
+                    L'autre option étudiée repose sur un capteur capable de détecter les métaux non ferreux. 
+                    Installé sur le convoyeur, il réagit spécifiquement au passage d'une canette en aluminium (non magnétique), mais reste inactif pour les bouteilles en plastique ou en verre. 
+                    Cette solution, plus simple à mettre en œuvre, requiert toutefois que les déchets passent à proximité du capteur (portée de détection de 1 à 2 cm) et l'ajout d'un capteur de présence pour compter chaque objet.
+                </p>
+                <p><strong>Avantages:</strong></p>
+                <ul>
+                    <li>Simplicité d'implémentation</li>
+                    <li>Fiabilité de détection pour l'aluminium</li>
+                    <li>Coût modéré</li>
+                </ul>
+                <p><strong>Inconvénients:</strong></p>
+                <ul>
+                    <li>Portée de détection limitée</li>
+                    <li>Nécessité d'aligner les déchets sur le convoyeur</li>
+                    <li>Capacité d'évolution limitée</li>
+                </ul>
+            </div>
+            
+            <div class="content-card"style="text-align: justify;">
+                <p>
+                    <em><strong>Choix final :</strong></em> Après comparaison, l'équipe a retenu le capteur non-ferreux. 
+                    Cette solution a été privilégiée pour sa fiabilité et sa simplicité d'intégration, tout en restant dans les limites du budget et du temps imparti, 
+                    contrairement à la caméra intelligente qui aurait nécessité davantage de développement et de ressources.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Components Section -->
+    <section id="composants" class="tech-section">
+        <div class="container">
+            <h2>🔧 Composants Techniques</h2>
+            <p class="section-description">Découvrez les composants clés de notre système de convoyage automatisé</p>
+            
+            <!-- Composants grid -->
+            <div class="components-grid">
+                <!-- Capteur ultrason -->
+                <div class="component-card">
+                    <img src="Capteur ultrason.png" alt="Capteur Ultrason" onclick="openModal(this.src, 'Capteur Ultrason HC-SR04 - Détection de présence des déchets sur le convoyeur')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Capteur Ultrason</h3>
+                    <p>HC-SR04 pour la détection de présence des déchets</p>
+                </div>
+                
+                <!-- Moteur DC -->
+                <div class="component-card">
+                    <img src="moteur DC.png" alt="Moteur DC" onclick="openModal(this.src, 'Moteur DC - Entraînement de la bande transporteuse avec réducteur intégré')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Moteur DC</h3>
+                    <p>Moteur à courant continu avec réducteur pour bande transporteuse</p>
+                </div>
+                
+                <!-- Alimentation externe -->
+                <div class="component-card">
+                    <img src="alimentation externe.png" alt="Alimentation Externe" onclick="openModal(this.src, 'Alimentation Externe - Module d\'alimentation 220V vers tensions DC')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Alimentation Externe</h3>
+                    <p>Module d'alimentation 12V vers le pont h pour faire actionner le moteur DC</p>
+                </div>
+                
+                <!-- Servomoteur -->
+                <div class="component-card">
+                    <img src="servomoteur.png" alt="Servomoteur" onclick="openModal(this.src, 'Servomoteur - Actionneur pour l\'éjection des canettes')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Servomoteur</h3>
+                    <p>Actionneur précis pour le passage ou non des déchets</p>
+                </div>
+                
+                <!-- Raspberry Pi 5 -->
+                <div class="component-card">
+                    <img src="rasberry pi 5.png" alt="Raspberry Pi 5" onclick="openModal(this.src, 'Raspberry Pi 5 - Contrôleur principal et gestion de la base de données')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Raspberry Pi 5</h3>
+                    <p>Contrôleur principal du sytsème (et gestion de la base de données)</p>
+                </div>
+                
+                <!-- Capteur NPN -->
+                <div class="component-card">
+                    <img src="NPN.png" alt="Capteur NPN" onclick="openModal(this.src, 'Capteur NPN Inductif - Détection des métaux non-ferreux (canettes aluminium)')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Capteur NPN Inductif</h3>
+                    <p>Détection des métaux non-ferreux (canettes aluminium)</p>
+                </div>
+                
+                <!-- Pont en H -->
+                <div class="component-card">
+                    <img src="pont en h.png" alt="Pont en H" onclick="openModal(this.src, 'Pont en H - Driver pour contrôler le moteur DC avec changement de sens et vitesse')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Pont en H (Driver Moteur)</h3>
+                    <p>Contrôleur pour moteur DC avec variation de vitesse et sens</p>
+                </div>
+                
+                <!-- Écran IHM -->
+                <div class="component-card">
+                    <img src="ecran ihm.png" alt="Écran IHM" onclick="openModal(this.src, 'Interface Homme-Machine - Écran tactile pour contrôle et monitoring du système')" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                    <h3>Écran IHM</h3>
+                    <p>Interface tactile pour le contrôle et monitoring du système</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prototype Section -->
+    <section id="prototype">
+        <div class="container">
+            <h2>📐 Prototype & Schémas</h2>
+            <p class="section-description">Visualisez notre prototype et les étapes de développement</p>
+            
+            <div class="gallery">
+                <img src="A1.png" 
+                     alt="Vue globale du prototype de convoyeur en CAO" onclick="openModal(this.src, this.alt)" 
+                     style="width: 100%; height: 250px; object-fit: cover; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(0, 102, 161, 0.3);">
+                
+                
+                 <img src="datasheet NPN.jpg" 
+                      alt="datasheet du capteur avec resistance pull up" onclick="openModal(this.src, this.alt)" 
+                      style="width: 100%; height: 250px; object-fit: cover; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(0, 102, 161, 0.3);">
+                
+                
+                <img src="Bande .png" 
+                      alt="datasheet du capteur avec resistance pull up" onclick="openModal(this.src, this.alt)" 
+                      style="width: 100%; height: 250px; object-fit: cover; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(0, 102, 161, 0.3);">
+                
+                <img src="Sortie convoyeur 1.png" 
+                      alt="Sortie du convoyeur " onclick="openModal(this.src, this.alt)" 
+                      style="width: 100%; height: 250px; object-fit: cover; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(0, 102, 161, 0.3);">
+                
+                <img src="Sortie convoyeur 2.png" 
+                      alt="Sortie du convoyeur vers convoyeur 2 (Assemblage)" onclick="openModal(this.src, this.alt)" 
+                      style="width: 100%; height: 250px; object-fit: cover; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(0, 102, 161, 0.3);">
+                
+     
+<div style="background:rgba(0,102,161,0.1);border:2px dashed var(--primary);border-radius:15px;height:250px;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--primary);font-size:1.2em;">
+  🎥<br><small style="font-size:0.7em;margin-top:8px;">Vidéo IHM — à venir</small>
+</div>
+                
+                
+            </div>
+            
+            <!-- Modal pour afficher les images en grand -->
+            <div id="imageModal" class="modal">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <img class="modal-content" id="modalImage">
+                <div id="caption" style="text-align: center; color: white; padding: 10px; font-size: 1.2em;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Suivi budget -->
+    <section id="budget">
+      <div class="container">
+        <h2>💰 Suivi Budgétaire</h2>
+        <p class="section-description">Répartition des dépenses sur une enveloppe de 1 500 €</p>
+
+        <!-- Barre de progression -->
+        <div class="content-card" style="text-align:center;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;margin-bottom:30px;">
+            <div style="padding:20px;background:rgba(255,255,255,0.05);border-radius:10px;">
+              <div style="font-size:2em;color:var(--tech-orange);margin-bottom:6px;">1 325 €</div>
+              <div>Total dépensé</div>
+            </div>
+            <div style="padding:20px;background:rgba(255,255,255,0.05);border-radius:10px;">
+              <div style="font-size:2em;color:var(--tech-orange);margin-bottom:6px;">1 500 €</div>
+              <div>Enveloppe totale</div>
+            </div>
+            <div style="padding:20px;background:rgba(255,255,255,0.05);border-radius:10px;">
+              <div style="font-size:2em;color:#4caf50;margin-bottom:6px;">175 €</div>
+              <div>Reste disponible</div>
+            </div>
+            <div style="padding:20px;background:rgba(255,255,255,0.05);border-radius:10px;">
+              <div style="font-size:2em;color:var(--tech-orange);margin-bottom:6px;">88 %</div>
+              <div>Budget consommé</div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1);border-radius:20px;height:14px;overflow:hidden;margin-bottom:8px;">
+            <div style="width:88%;height:100%;background:linear-gradient(90deg,var(--primary),var(--tech-orange));border-radius:20px;transition:width 1s ease;"></div>
+          </div>
+          <small style="color:rgba(255,255,255,0.5);">88 % de l'enveloppe utilisée</small>
+        </div>
+
+        <!-- Tableau détaillé -->
+        <div class="content-card" style="overflow-x:auto;">
+          <h3 style="color:var(--primary);margin-bottom:20px;font-size:1.3em;">📋 Détail des postes de dépenses</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.9em;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--primary);">
+                <th style="text-align:left;padding:10px 14px;color:var(--primary);">Catégorie</th>
+                <th style="text-align:left;padding:10px 14px;color:var(--primary);">Composant principal</th>
+                <th style="text-align:right;padding:10px 14px;color:var(--primary);">Montant</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <td style="padding:10px 14px;">🏗️ Structure</td>
+                <td style="padding:10px 14px;color:rgba(255,255,255,0.7);">Profilés alu 40×40 (2 m + 800 mm), bande caoutchouc, MDF/HDF, tôle alu</td>
+                <td style="padding:10px 14px;text-align:right;color:var(--tech-orange);">~415 €</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <td style="padding:10px 14px;">⚙️ Motorisation</td>
+                <td style="padding:10px 14px;color:rgba(255,255,255,0.7);">Moteur DC 12 V encodeur, arbre alu, poulies, courroie, servomoteur 25 kg</td>
+                <td style="padding:10px 14px;text-align:right;color:var(--tech-orange);">~175 €</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <td style="padding:10px 14px;">🔌 Électronique</td>
+                <td style="padding:10px 14px;color:rgba(255,255,255,0.7);">Raspberry Pi 5 ×2, écran IHM 7", ESP32, capteur NPN, HC-SR04, driver, PCB</td>
+                <td style="padding:10px 14px;text-align:right;color:var(--tech-orange);">~385 €</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <td style="padding:10px 14px;">⚡ Alimentation</td>
+                <td style="padding:10px 14px;color:rgba(255,255,255,0.7);">Transformateur 220 V → 12 V / 63 VA</td>
+                <td style="padding:10px 14px;text-align:right;color:var(--tech-orange);">47 €</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <td style="padding:10px 14px;">🔩 Équipements</td>
+                <td style="padding:10px 14px;color:rgba(255,255,255,0.7);">Roulettes pivotantes, fixations angulaires, tiges filetées, roulements</td>
+                <td style="padding:10px 14px;text-align:right;color:var(--tech-orange);">~110 €</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <td style="padding:10px 14px;">🪛 Visserie / Consommables</td>
+                <td style="padding:10px 14px;color:rgba(255,255,255,0.7);">Vis Inox M3→M10, écrous, rondelles, câbles, connecteurs</td>
+                <td style="padding:10px 14px;text-align:right;color:var(--tech-orange);">~143 €</td>
+              </tr>
+              <tr style="background:rgba(0,102,161,0.15);font-weight:700;">
+                <td style="padding:12px 14px;" colspan="2">TOTAL</td>
+                <td style="padding:12px 14px;text-align:right;color:#4caf50;font-size:1.1em;">1 325 €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Lien PDF -->
+        <div class="content-card" style="text-align:center;">
+          <a href="Estimations_budget_FINAL.pdf" target="_blank" style="font-size:1.1em;padding:16px 32px;">
+            📄 Télécharger le détail complet (PDF)
+          </a>
+          <p style="margin-top:12px;"><small>Tableau complet avec références fournisseurs et liens d'achat</small></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistiques du projet -->
+            <div class="content-card" style="background: linear-gradient(135deg, rgba(0, 102, 161, 0.1), rgba(255, 145, 0, 0.1));">
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                    📊 Statistiques du Projet
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+                    <div style="padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div style="font-size: 2em; color: var(--tech-orange); margin-bottom: 10px;">120+</div>
+                        <div>Heures de travail</div>
+                    </div>
+                    <div style="padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div style="font-size: 2em; color: var(--tech-orange); margin-bottom: 10px;">15+</div>
+                        <div>Composants intégrés</adiv>
+                    </div>
+                    <div style="padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div style="font-size: 2em; color: var(--tech-orange); margin-bottom: 10px;">50+</div>
+                        <div>Tests effectués</div>
+                    </div>
+                    <div style="padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div style="font-size: 2em; color: var(--tech-orange); margin-bottom: 10px;">95%</div>
+                        <div>Taux de réussite</div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- Constraints Section -->
+    <section id="contraintes">
+        <div class="container">
+            <h2>⚠️ Contraintes du Projet</h2>
+            <div class="content-card">
+                <ul>
+                    <li><strong>Contraintes fonctionnelles :</strong> Assurer un débit de tri suffisant (vitesse du convoyeur définie pour traiter tous les déchets), supporter la charge de plusieurs déchets à la fois (plusieurs kilogrammes), et dimensionner le convoyeur pour des objets de taille allant jusqu'à une bouteille de 1,5 L (environ 10 cm de diamètre).</li>
+                    <li><strong>Contraintes techniques :</strong> Utiliser une motorisation électrique fiable (avec variateur pour ajuster la vitesse), piloter l'ensemble par un microcontrôleur (type Arduino ou Raspberry Pi) assurant la coordination des capteurs, des actionneurs et de la base de données (avec IHM pour le suivi).</li>
+                    <li><strong>Contraintes environnementales :</strong> Faire fonctionner le convoyeur en intérieur dans des conditions normales (environ 18 °C). Choisir des composants à faible consommation pour minimiser l'empreinte énergétique du système.</li>
+                    <li><strong>Contraintes de sécurité :</strong> Intégrer des dispositifs de sécurité (bouton d'arrêt d'urgence, garde-corps ou carénages) pour prévenir les accidents et empêcher les déchets de chuter hors du système. Respecter les normes de sécurité (CE, ISO) en vigueur pour les machines.</li>
+                    <li><strong>Contraintes économiques :</strong> Respecter une enveloppe budgétaire limitée (environ 300 € par membre, soit ~1500 € au total) pour l'ensemble du projet, tout en prévoyant une marge pour les imprévus.</li>
+                    <li><strong>Contraintes temporelles :</strong> Respecter le calendrier académique : 1er semestre dédié à l'étude technique, la planification et la rédaction du cahier des charges ; 2ème semestre consacré à la réalisation du prototype et aux tests, afin de livrer un système opérationnel d'ici la fin de l'année scolaire.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demonstration Section -->
+    <section id="demonstration">
+        <div class="container">
+            <h2>🎥 Démonstration du Prototype</h2>
+            <p class="section-description">Découvrez notre prototype en action à travers ces vidéos de test</p>
+            
+            <!-- Vidéo 1 : Premier test bande -->
+            <div class="content-card">
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5em;">
+                    🚀 Vidéo 1 : Premier Test de la Bande Transporteuse
+                </h3>
+                <p>Première mise en fonctionnement de notre système de convoyage avec tests de vitesse et de stabilité :</p>
+                
+<div style="display:flex;justify-content:center;margin:20px 0;">
+  <div style="position:relative;width:100%;max-width:360px;padding-top:177.78%;border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,102,161,0.3);">
+    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:15px;"
+      src="https://www.youtube.com/embed/7tNQ4EE5kmU"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+</div>
+            </div>
+            
+            <!-- Vidéo 2 : Visualisation -->
+            <div class="content-card">
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5em;">
+                    🔧 Vidéo 2 : Visualisation des Composants et de la Bande
+                </h3>
+                <p>Tour d'horizon détaillé de notre installation avec présentation des différents composants intégrés :</p>
+                
+<div style="display:flex;justify-content:center;margin:20px 0;">
+  <div style="position:relative;width:100%;max-width:360px;padding-top:177.78%;border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,102,161,0.3);">
+    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:15px;"
+      src="https://www.youtube.com/embed/MeUG7ncxKTA"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+</div>
+            </div>
+            <!-- Vidéo 3 : Axage de la bande -->
+            
+            <div class="content-card">
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5em;">
+                    🔩Vidéo 3 : Modification de l'axage et réglages
+                </h3>
+                <p>Réglages précis de l’axage et ajustements mécaniques pour garantir un alignement optimal du convoyeur :</p>
+                
+<div style="position:relative;width:100%;padding-top:56.25%;border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,102,161,0.3);margin:20px 0;">
+  <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:15px;"
+    src="https://www.youtube.com/embed/86J0c5Bf5gw"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>
+</div>
+            </div>
+
+            <!-- Vidéo 3 : Axage de la bande -->
+            
+            <div class="content-card">
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5em;">
+                📦➡️📦➡️📦Vidéo 4 :  Visualation de l'intérieur du convoyeur
+                </h3>
+                <p>Visualistion Interieur de notre bande roulante avec le codage qui permet de le faire rouler </p>
+                
+<div style="display:flex;justify-content:center;margin:20px 0;">
+  <div style="position:relative;width:100%;max-width:360px;padding-top:177.78%;border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,102,161,0.3);">
+    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:15px;"
+      src="https://www.youtube.com/embed/BR7ucq3n6FI"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+</div>
+
+                <div class="content-card">
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 1.5em;">
+                ✅Vidéo 5 :  Visualation total du convoyeur 
+                </h3>
+                <p>Démarrage et sytème complet du convoyeur </p>
+
+                <!---Video Final---> 
+<div style="display:flex;justify-content:center;margin:20px 0;">
+  <div style="position:relative;width:100%;max-width:360px;padding-top:177.78%;border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,102,161,0.3);">
+    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:15px;"
+      src="https://www.youtube.com/embed/8FXeJPvSgVU"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+</div>
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- Specifications Section -->
+    <section id="cahier-des-charges">
+        <div class="container">
+            <h2>📄 Cahier des Charges</h2>
+            <div class="content-card" style="text-align: center;">
+                <p>
+                    <a href="Cahier_des_charges_FINAL.pdf" target="_blank" style="font-size: 1.2em; padding: 20px 40px;">📄 Consulter le cahier des charges (PDF)</a>
+                </p>
+                <p><small>Document technique complet avec spécifications détaillées</small></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 ICAM Grand Paris Sud - Convoyeur de Tri Automatique</p>
+        </div>
+    </footer>
+
+    <script>
+        // Create circuit board background
+        function createCircuitBackground() {
+            const circuitBg = document.getElementById('circuitBg');
+            const circuitCount = 20;
+
+            for (let i = 0; i < circuitCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'circuit-line ' + (Math.random() > 0.5 ? 'horizontal' : 'vertical');
+                line.style.left = Math.random() * 100 + '%';
+                line.style.top = Math.random() * 100 + '%';
+                line.style.animationDelay = Math.random() * 3 + 's';
+                circuitBg.appendChild(line);
+            }
+        }
+
+        // Create floating tech particles
+        function createTechParticles() {
+            const techParticles = document.getElementById('techParticles');
+            const particles = ['♻️', '🔧', '⚡', '💻', '📊', '🔌', '🛠️', '⚙️', '🏭', '🤖'];
+            const particleCount = 15;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'tech-particle';
+                particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                techParticles.appendChild(particle);
+            }
+        }
+
+        // Smooth scrolling navigation
+        function initSmoothScrolling() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(link.getAttribute('href'));
+                    if (target) {
+                        const headerHeight = document.querySelector('header').offsetHeight + document.querySelector('nav').offsetHeight;
+                        const targetPosition = target.offsetTop - headerHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Collapsible sections functionality
+        function initCollapsibles() {
+            const collapsibles = document.querySelectorAll('.collapsible');
+            collapsibles.forEach(collapsible => {
+                collapsible.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        content.classList.remove('active');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        content.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // Modal functionality for gallery
+        function openModal(src, alt) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.getElementById('caption');
+            
+            modal.style.display = 'block';
+            
+            if (src === 'placeholder') {
+                modalImg.style.display = 'none';
+                caption.innerHTML = `<div style="font-size: 5em; margin: 50px;">📷</div><p>${alt}</p><p><em>Image à venir prochainement</em></p>`;
+            } else {
+                modalImg.style.display = 'block';
+                modalImg.src = src;
+                caption.innerHTML = alt;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Animate elements on scroll
+        function animateOnScroll() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            const animatedElements = document.querySelectorAll('.team-member, .content-card, .component-card');
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Header scroll effect
+        function handleHeaderScroll() {
+            const header = document.querySelector('header');
+            const nav = document.querySelector('nav');
+            const scrolled = window.pageYOffset;
+
+            if (scrolled > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.08)';
+                header.style.backdropFilter = 'blur(20px)';
+                nav.style.background = 'rgba(0, 102, 161, 0.95)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.05)';
+                header.style.backdropFilter = 'blur(15px)';
+                nav.style.background = 'rgba(0, 102, 161, 0.9)';
+            }
+        }
+
+        // Add hover effects
+        function addHoverEffects() {
+            const interactiveElements = document.querySelectorAll('.team-member, .content-card, .collapsible, .placeholder-gallery, .component-card');
+            
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    element.style.filter = 'brightness(1.05)';
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.filter = 'brightness(1)';
+                });
+            });
+        }
+
+        // Initialize all functions
+        document.addEventListener('DOMContentLoaded', () => {
+            createCircuitBackground();
+            createTechParticles();
+            initSmoothScrolling();
+            initCollapsibles();
+            animateOnScroll();
+            addHoverEffects();
+        });
+
+        // Scroll event handler
+        window.addEventListener('scroll', handleHeaderScroll);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease-in';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
