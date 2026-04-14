@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jumeau Numérique Thermique — Équipe 14 | ICAM GPS</title>
+  <meta name="description" content="Projet de jumeau numérique thermique avec IA prédictive, piloté sur Raspberry Pi, conçu par l'Équipe 14 de l'ICAM Grand Paris Sud." />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    :root{
+      --bg-1:#06131f;
+      --bg-2:#0a2030;
+      --bg-3:#0f2d45;
+      --panel:#0d1d2bd9;
+      --line:#2a8dc7;
+      --line-soft:rgba(42,141,199,.25);
+      --cyan:#6ce5ff;
+      --cyan-2:#2ec5ff;
+      --blue:#3b82f6;
+      --teal:#27d3b8;
+      --amber:#ffb84d;
+      --text:#ecf7ff;
+      --muted:#b8cfdd;
+      --muted-2:#8ba6b7;
+      --shadow:0 18px 45px rgba(0,0,0,.28);
+      --radius:22px;
+      --radius-sm:14px;
+      --max:1080px;
+    }
+
+    html{scroll-behavior:smooth}
+    body{
+      text-align:left;
+      text-align:justify;
+      font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(46,197,255,.16), transparent 0 22%),
+        radial-gradient(circle at 85% 18%, rgba(39,211,184,.11), transparent 0 18%),
+        radial-gradient(circle at 50% 80%, rgba(59,130,246,.12), transparent 0 28%),
+        linear-gradient(135deg,var(--bg-1),var(--bg-2) 48%,var(--bg-3));
+      min-height:100vh;
+      overflow-x:hidden;
+      line-height:1.65;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-3;
+      background-image:
+        linear-gradient(rgba(108,229,255,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,229,255,.07) 1px, transparent 1px);
+      background-size:42px 42px;
+      mask-image:radial-gradient(circle at center, black 45%, transparent 100%);
+      opacity:.18;
+    }
+
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-2;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(108,229,255,.15), transparent 0 10%),
+        radial-gradient(circle at 75% 30%, rgba(255,184,77,.08), transparent 0 8%),
+        radial-gradient(circle at 60% 75%, rgba(39,211,184,.12), transparent 0 11%);
+      filter:blur(40px);
+      opacity:.85;
+    }
+
+    .data-network{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:-1;
+      opacity:.42;
+    }
+
+    .node,.link,.pulse{position:absolute;transform:translate(-50%,-50%)}
+    .node{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px rgba(108,229,255,.9)}
+    .pulse{width:18px;height:18px;border-radius:50%;border:1px solid rgba(108,229,255,.35);animation:pulse 4s infinite ease-out}
+    .link{height:1px;background:linear-gradient(90deg, transparent, rgba(108,229,255,.55), transparent);transform-origin:left center;opacity:.65}
+
+    @keyframes pulse{
+      0%{transform:translate(-50%,-50%) scale(.6);opacity:.8}
+      100%{transform:translate(-50%,-50%) scale(3);opacity:0}
+    }
+
+    .container{width:min(calc(100% - 32px),var(--max));margin:0 auto}
+
+    .topbar{
+      position:sticky;top:0;z-index:999;
+      backdrop-filter:blur(16px);
+      background:rgba(5,15,24,.72);
+      border-bottom:1px solid rgba(108,229,255,.14);
+    }
+
+    .topbar-inner{
+      width:min(calc(100% - 24px),1260px);
+      margin:0 auto;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      padding:12px 0;
+    }
+
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-mark{
+      width:42px;height:42px;border-radius:12px;
+      background:linear-gradient(135deg, rgba(108,229,255,.2), rgba(39,211,184,.2));
+      border:1px solid rgba(108,229,255,.28);
+      display:grid;place-items:center;box-shadow:inset 0 0 20px rgba(108,229,255,.08);flex:0 0 auto;
+    }
+    .brand-mark svg{width:23px;height:23px;stroke:var(--cyan)}
+    .brand-text strong{display:block;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brand-text span{display:block;font-size:.77rem;color:var(--muted-2)}
+
+    nav ul{list-style:none;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+    nav a{
+      color:var(--muted);text-decoration:none;font-size:.92rem;font-weight:600;
+      padding:10px 14px;border-radius:999px;transition:.25s ease;display:inline-block;border:1px solid transparent;
+    }
+    nav a:hover,nav a:focus{color:var(--text);background:rgba(108,229,255,.08);border-color:rgba(108,229,255,.18);outline:none}
+
+    .hero{padding:82px 0 54px;position:relative}
+    .hero-grid{display:grid;grid-template-columns:1.25fr .95fr;gap:26px;align-items:stretch}
+
+    .hero-card,.panel,.card,.timeline-card,details{
+      background:linear-gradient(180deg, rgba(13,29,43,.82), rgba(8,20,32,.85));
+      border:1px solid rgba(108,229,255,.14);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+    }
+
+    .hero-card{padding:34px;position:relative;overflow:hidden}
+    .hero-card::before{
+      content:"";position:absolute;inset:auto -60px -60px auto;width:220px;height:220px;border-radius:50%;
+      background:radial-gradient(circle, rgba(108,229,255,.18), transparent 65%);filter:blur(10px);
+    }
+
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+      color:var(--cyan);border:1px solid rgba(108,229,255,.22);background:rgba(108,229,255,.06);
+      font-size:.8rem;font-weight:700;letter-spacing:.04em;margin-bottom:18px;
+    }
+
+    h1{font-size:clamp(2.1rem,4vw,4rem);line-height:1.06;margin-bottom:16px;max-width:12ch}
+    .hero-card .lead{color:var(--muted);font-size:1.04rem;max-width:61ch;margin-bottom:24px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;border:none;cursor:pointer;
+      padding:13px 18px;border-radius:14px;font-weight:700;transition:.25s ease;font-size:.95rem;
+    }
+    .btn-primary{background:linear-gradient(135deg,var(--cyan-2),var(--teal));color:#032130;box-shadow:0 10px 30px rgba(46,197,255,.25)}
+    .btn-primary:hover{transform:translateY(-2px)}
+    .btn-secondary{background:rgba(255,255,255,.03);color:var(--text);border:1px solid rgba(108,229,255,.18)}
+    .btn-secondary:hover{background:rgba(108,229,255,.08);transform:translateY(-2px)}
+
+    .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .mini-stat{padding:14px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(108,229,255,.08)}
+    .mini-stat strong{display:block;font-size:1.35rem;color:var(--amber);margin-bottom:2px}
+    .mini-stat span{font-size:.8rem;color:var(--muted-2)}
+
+    .hero-side{display:grid;gap:16px}
+    .twin-visual{padding:24px;position:relative;overflow:hidden;min-height:100%}
+    .visual-title{font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--cyan)}
+    .twin-stage{
+      position:relative;min-height:320px;border-radius:18px;border:1px solid rgba(108,229,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),radial-gradient(circle at 50% 50%, rgba(108,229,255,.08), transparent 55%);
+      overflow:hidden;
+    }
+
+    .ring,.core,.orbit,.label-chip,.flow-line,.heat-zone{position:absolute}
+    .ring{inset:50% auto auto 50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(108,229,255,.22)}
+    .ring.r1{width:230px;height:230px}.ring.r2{width:170px;height:170px}.ring.r3{width:115px;height:115px}
+    .core{
+      top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:20px;
+      background:linear-gradient(135deg, rgba(255,184,77,.95), rgba(255,126,87,.9));box-shadow:0 0 30px rgba(255,184,77,.35);
+      display:grid;place-items:center;color:#13202b;font-weight:800;font-size:.85rem;
+    }
+    .orbit{width:12px;height:12px;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px rgba(108,229,255,.7);animation:orbit 9s linear infinite;transform-origin:0 0}
+    .orbit.o1{top:50%;left:50%}.orbit.o2{top:50%;left:50%;animation-duration:13s;animation-direction:reverse}
+    @keyframes orbit{from{transform:rotate(0deg) translateX(115px)}to{transform:rotate(360deg) translateX(115px)}}
+    .flow-line{height:2px;background:linear-gradient(90deg, transparent, rgba(39,211,184,.85), transparent);animation:flow 4s linear infinite;opacity:.8}
+    .f1{top:24%;left:8%;width:42%;transform:rotate(12deg)} .f2{bottom:26%;right:8%;width:38%;transform:rotate(-14deg);animation-duration:5.5s} .f3{top:58%;left:14%;width:26%;transform:rotate(-24deg);animation-duration:3.2s}
+    @keyframes flow{0%{filter:brightness(.8);opacity:.35}50%{filter:brightness(1.4);opacity:1}100%{filter:brightness(.8);opacity:.35}}
+    .heat-zone{top:50%;left:50%;transform:translate(-50%,-50%);width:150px;height:150px;border-radius:50%;background:radial-gradient(circle, rgba(255,184,77,.22), rgba(255,107,53,.08), transparent 70%)}
+    .label-chip{padding:8px 10px;border-radius:12px;background:rgba(9,25,37,.9);border:1px solid rgba(108,229,255,.16);font-size:.78rem;color:var(--muted)}
+    .lc1{top:22px;left:18px}.lc2{top:50px;right:18px}.lc3{bottom:22px;left:20px}.lc4{bottom:54px;right:26px}
+
+    section{padding:36px 0}
+    .section-head{margin-bottom:18px}
+    .section-head .kicker{display:inline-block;color:var(--cyan);font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+    .section-head h2{
+  font-size:clamp(1.6rem,2.5vw,2.35rem);
+  margin-bottom:10px;
+  width:100%;
+}
+    .section-head p{
+  color:var(--muted);
+  width:100%;
+  max-width:none;
+  text-align:left;
+}
+
+    .grid-2{display:grid;grid-template-columns:1.08fr .92fr;gap:22px}
+    .metric-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+    .metric-card{padding:18px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));border:1px solid rgba(108,229,255,.08)}
+    .metric-card strong{display:block;font-size:1.65rem;color:var(--amber);margin-bottom:4px}
+    .metric-card span{font-size:.84rem;color:var(--muted-2)}
+
+    .panel{padding:26px}
+    .panel h3{font-size:1.14rem;margin-bottom:12px;color:var(--cyan)}
+    .soft-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(108,229,255,.18),transparent);margin:14px 0 10px}
+    .accent-cyan{border-left:4px solid var(--cyan)}
+    .accent-amber{border-left:4px solid var(--amber)}
+    .accent-teal{border-left:4px solid var(--teal)}
+    .mini-note{font-size:.84rem;color:var(--muted-2)}
+    .compact-panel{padding:20px}
+
+    .highlight-list{display:grid;gap:10px;list-style:none;margin-top:14px}
+    .highlight-list li{background:rgba(255,255,255,.03);border:1px solid rgba(108,229,255,.08);padding:14px 14px 14px 16px;border-radius:16px;color:var(--muted)}
+    .highlight-list li strong{color:var(--text)}
+
+    .team-grid,.component-grid,.docs-grid,.model-grid,.timeline-grid{display:grid;gap:16px}
+    .team-grid{grid-template-columns:repeat(5,1fr)}
+    .component-grid{grid-template-columns:repeat(4,1fr)}
+    .docs-grid{grid-template-columns:repeat(3,1fr)}
+    .model-grid{grid-template-columns:repeat(3,1fr)}
+    .timeline-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+
+    .card,.timeline-card{padding:22px;transition:.28s ease}
+    .card:hover,.timeline-card:hover{transform:translateY(-4px);border-color:rgba(108,229,255,.22)}
+
+    .team-role{font-size:.84rem;color:var(--amber);margin-top:6px}
+    .avatar{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;margin-bottom:14px;background:linear-gradient(135deg, rgba(46,197,255,.16), rgba(39,211,184,.16));border:1px solid rgba(108,229,255,.18);font-weight:800;color:var(--cyan)}
+    .flag{display:inline-block;margin-bottom:10px;padding:6px 10px;border-radius:999px;background:rgba(255,184,77,.12);color:var(--amber);font-size:.75rem;font-weight:700;border:1px solid rgba(255,184,77,.18)}
+
+    details{overflow:hidden}
+    details + details{margin-top:12px}
+    summary{cursor:pointer;list-style:none;padding:18px 22px;font-weight:800;color:var(--text);position:relative}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"＋";position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--cyan);font-size:1.1rem}
+    details[open] summary::after{content:"−"}
+    .details-body{padding:0 22px 22px;color:var(--muted)}
+    .details-body ul{padding-left:18px;margin-top:10px}
+    .details-body li{margin:8px 0}
+
+    .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .chip{padding:9px 12px;border-radius:999px;background:rgba(108,229,255,.06);border:1px solid rgba(108,229,255,.14);color:var(--muted);font-size:.83rem;font-weight:600}
+
+    .model-card .score{display:grid;gap:10px;margin-top:14px}
+    .row-score{display:flex;justify-content:space-between;gap:10px;padding-bottom:9px;border-bottom:1px solid rgba(108,229,255,.08);color:var(--muted)}
+    .row-score:last-child{border-bottom:none;padding-bottom:0}
+    .row-score strong{color:var(--cyan)}
+    .winner{border-color:rgba(255,184,77,.28);box-shadow:0 18px 45px rgba(255,184,77,.08);position:relative}
+    .winner::before{content:"Modèle retenu";position:absolute;top:16px;right:16px;padding:6px 10px;border-radius:999px;background:rgba(255,184,77,.14);color:var(--amber);border:1px solid rgba(255,184,77,.22);font-size:.72rem;font-weight:800}
+
+    .two-col-list{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+    .info-box{padding:18px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(108,229,255,.08)}
+    .info-box h4{margin-bottom:10px;color:var(--text)}
+    .info-box ul{padding-left:18px;color:var(--muted)}
+    .info-box li{margin:8px 0}
+
+    .media-card{padding:16px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(108,229,255,.12)}
+    .media-card img{display:block;width:100%;height:auto;border-radius:14px}
+    .media-caption{margin-top:10px;font-size:.9rem;color:var(--muted)}
+
+    .pdf-viewer{
+  margin:20px auto;
+  max-width:800px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(108,229,255,.14);
+  background:rgba(255,255,255,.03);
+}
+    .pdf-viewer iframe{
+  display:block;
+  width:100%;
+  height:520px;
+  border:none;
+  background:#fff;
+}
+
+    .timeline-card h4{margin-bottom:8px;color:var(--text);font-size:1rem}
+    .timeline-card p{margin:0;color:var(--muted);font-size:.92rem}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:.74rem;font-weight:800;margin-bottom:10px}
+    .tag-cyan{background:rgba(108,229,255,.10);color:var(--cyan);border:1px solid rgba(108,229,255,.18)}
+    .tag-amber{background:rgba(255,184,77,.10);color:var(--amber);border:1px solid rgba(255,184,77,.18)}
+    .tag-teal{background:rgba(39,211,184,.10);color:var(--teal);border:1px solid rgba(39,211,184,.18)}
+
+    footer{padding:34px 0 52px}
+    .footer-card{padding:24px;border-radius:22px;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid rgba(108,229,255,.1);text-align:center;color:var(--muted)}
+    .small{font-size:.9rem}
+
+    @media (max-width:1100px){
+      .hero-grid,.grid-2{grid-template-columns:1fr}
+      .hero-stats,.metric-grid{grid-template-columns:repeat(2,1fr)}
+      .team-grid{grid-template-columns:repeat(3,1fr)}
+      .component-grid,.docs-grid{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media (max-width:900px){
+      .timeline-grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width:760px){
+      .topbar-inner{flex-direction:column;align-items:flex-start}
+      nav ul{justify-content:flex-start}
+      .hero{padding-top:46px}
+      .hero-card,.panel,.card,.timeline-card,.media-card{padding:22px}
+      .hero-stats,.metric-grid,.team-grid,.component-grid,.docs-grid,.model-grid,.two-col-list{grid-template-columns:1fr}
+      h1{max-width:none}
+      .twin-stage{min-height:260px}
+      .ring.r1{width:180px;height:180px}.ring.r2{width:130px;height:130px}.ring.r3{width:90px;height:90px}
+      @keyframes orbit{from{transform:rotate(0deg) translateX(92px)}to{transform:rotate(360deg) translateX(92px)}}
+      .pdf-viewer iframe{height:340px}
+      .section-head h2{max-width:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="data-network" id="dataNetwork"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <path d="M12 3l7 4v10l-7 4-7-4V7l7-4Z"></path>
+            <path d="M12 7l3.5 2v4L12 15l-3.5-2V9L12 7Z"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <strong>Jumeau Numérique Thermique</strong>
+          <span>Équipe 14 · ICAM Grand Paris Sud</span>
+        </div>
+      </div>
+
+      <nav aria-label="Navigation principale">
+        <ul>
+          <li><a href="#projet">Projet</a></li>
+          <li><a href="#equipe">Équipe</a></li>
+          <li><a href="#conception">Conception</a></li>
+          <li><a href="#electronique">Électronique</a></li>
+          <li><a href="#logiciel">Logiciel</a></li>
+          <li><a href="#ia">IA</a></li>
+          <li><a href="#organisation">Organisation</a></li>
+          <li><a href="#demo">Démo</a></li>
+          <li><a href="#documents">Documents</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="projet">
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow">Promotion 2026 · Projet 2024–2025</div>
+          <h1>Un jumeau numérique thermique piloté par l'IA</h1>
+          <p class="lead">
+            Ce projet vise à concevoir un système capable de reproduire, suivre et anticiper le comportement thermique d'un processeur simulé. Le jumeau physique, l'électronique embarquée, la modélisation et l'algorithme prédictif travaillent ensemble pour améliorer la régulation en temps réel.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#conception">Découvrir le système</a>
+            <a class="btn btn-secondary" href="#documents">Voir les livrables</a>
+          </div>
+          <div class="hero-stats">
+            <div class="mini-stat"><strong>3</strong><span>capteurs NTC</span></div>
+            <div class="mini-stat"><strong>2440</strong><span>points de données</span></div>
+            <div class="mini-stat"><strong>0,252°C</strong><span>MAE meilleur modèle</span></div>
+            <div class="mini-stat"><strong>0,867</strong><span>R² Random Forest</span></div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="hero-card twin-visual">
+            <div class="visual-title">Vue conceptuelle du jumeau numérique</div>
+            <div class="twin-stage" aria-hidden="true">
+              <div class="heat-zone"></div>
+              <div class="ring r1"></div>
+              <div class="ring r2"></div>
+              <div class="ring r3"></div>
+              <div class="core">CPU</div>
+              <div class="orbit o1"></div>
+              <div class="orbit o2"></div>
+              <div class="flow-line f1"></div>
+              <div class="flow-line f2"></div>
+              <div class="flow-line f3"></div>
+              <div class="label-chip lc1">Capteurs T1 · T2 · T3</div>
+              <div class="label-chip lc2">Simulation thermique</div>
+              <div class="label-chip lc3">Commande ventilateur</div>
+              <div class="label-chip lc4">Prédiction IA temps réel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Vue d'ensemble</span>
+          <h2>Un système physique relié à son double numérique</h2>
+          <p>
+            Le projet s'appuie sur une enceinte instrumentée contenant une source chauffante simulant un processeur, un système de ventilation, des ailettes de dissipation et une chaîne de mesure. Les données acquises alimentent une logique de contrôle et un modèle de machine learning pour prédire la température critique avant même son observation complète.
+          </p>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-card"><strong>Raspberry Pi 5</strong><span>pilotage embarqué</span></div>
+          <div class="metric-card"><strong>MCP3008</strong><span>conversion analogique</span></div>
+          <div class="metric-card"><strong>L298N</strong><span>commande puissance</span></div>
+          <div class="metric-card"><strong>ANSYS</strong><span>simulation & optimisation</span></div>
+          <div class="metric-card"><strong>Python + IA</strong><span>supervision & prédiction</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="equipe">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Équipe projet</span>
+          <h2>Une équipe pluridisciplinaire</h2>
+          <p>Chaque membre contribue à une partie clé du jumeau numérique : mécanique, montage, électronique, logiciel, IA et communication.</p>
+        </div>
+
+        <div class="team-grid">
+          <article class="card">
+            <span class="flag">Chef de projet</span>
+            <div class="avatar">CM</div>
+            <h3>Clément MADORRE</h3>
+            <p class="team-role">Pilotage · électronique · programmation · IA</p>
+          </article>
+          <article class="card">
+            <div class="avatar">DA</div>
+            <h3>Dildar AYDIN</h3>
+            <p class="team-role">Technicien électronique · appui IA</p>
+          </article>
+          <article class="card">
+            <div class="avatar">SV</div>
+            <h3>Samuel VIDAL</h3>
+            <p class="team-role">Mécanique · modélisation</p>
+          </article>
+          <article class="card">
+            <div class="avatar">GD</div>
+            <h3>Guillaume DE CIBEINS</h3>
+            <p class="team-role">Montage · intégration</p>
+          </article>
+          <article class="card">
+            <div class="avatar">IT</div>
+            <h3>Inès TISSOT</h3>
+            <p class="team-role">Interface · communication</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="conception">
+      <div class="container grid-2">
+        <div>
+          <div class="section-head">
+            <span class="kicker">Conception</span>
+            <h2>Architecture physique et modélisation</h2>
+            <p>
+              Le jumeau physique a été conçu pour représenter de manière contrôlée les phénomènes de chauffe, de dissipation et de circulation d'air autour d'un processeur simulé.
+            </p>
+          </div>
+
+          <details open>
+            <summary>CAO et structure de l'enceinte</summary>
+            <div class="details-body">
+              <p>L'ensemble repose sur une enceinte imprimée en PLA avec compartiment principal thermique et zone supérieure dédiée à l'électronique.</p>
+              <ul>
+                <li>Résistance chauffante au centre pour simuler la source chaude.</li>
+                <li>Ailettes en aluminium pour améliorer l'échange thermique.</li>
+                <li>Ventilateur latéral 60 × 60 mm pour imposer un flux d'air.</li>
+                <li>Grille de sortie pour éviter la stagnation thermique.</li>
+                <li>Accès facilité aux cartes et connexions via le compartiment supérieur.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary>Simulations ANSYS Workbench</summary>
+            <div class="details-body">
+              <p>Les simulations ont servi à comparer des configurations et à valider les choix de conception avant fabrication.</p>
+              <ul>
+                <li>Étude des gradients de température internes.</li>
+                <li>Analyse comparative avec et sans ailettes.</li>
+                <li>Optimisation de la dissipation par variation de géométrie et de ventilation.</li>
+                <li>Visualisation des flux d'air et des zones critiques.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary>Démarche responsable</summary>
+            <div class="details-body">
+              <ul>
+                <li>Réduction de la taille du système physique pour limiter la matière utilisée.</li>
+                <li>Usage de PLA biosourcé pour la structure imprimée.</li>
+                <li>Régulation à hystérésis pour réduire les cycles inutiles du ventilateur.</li>
+                <li>Choix de composants démontables et réutilisables.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <aside style="display:grid;gap:16px">
+
+  <div class="media-card">
+    <img src="simulation-cao.png" alt="Vue CAO du système">
+    <div class="media-caption">Vue CAO du système physique</div>
+  </div>
+
+  <div class="panel">
+    <h3>Schéma électrique</h3>
+    <p>Le schéma est disponible dans les ressources du projet pour éviter la répétition visuelle.</p>
+    <a class="btn btn-secondary" href="schema.png" target="_blank">Voir le schéma</a>
+  </div>
+
+</aside>
+      </div>
+    </section>
+
+    <section id="electronique">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Électronique</span>
+          <h2>Chaîne d'acquisition, alimentation et pilotage</h2>
+          <p>Pour éviter un bloc trop dense, cette partie est découpée en sous-ensembles. Chaque volet correspond à une fonction du prototype : mesurer, alimenter, piloter et intégrer les composants.</p>
+        </div>
+
+        <div class="component-grid">
+          <article class="card"><h3>Raspberry Pi 5</h3><p>Unité centrale de pilotage pour l'acquisition, la régulation et l'exécution du jumeau numérique.</p></article>
+          <article class="card"><h3>Pont en H L298N</h3><p>Commande de la résistance chauffante et du ventilateur via signaux GPIO et modulation de puissance.</p></article>
+          <article class="card"><h3>MCP3008</h3><p>Convertisseur analogique-numérique utilisé pour récupérer les mesures des sondes de température en SPI.</p></article>
+          <article class="card"><h3>3 thermistances NTC</h3><p>Mesure de T1, T2 et T3 pour suivre l'entrée d'air, la zone chaude et la sortie du système.</p></article>
+          <article class="card"><h3>Ventilateur 60 × 60 mm</h3><p>Création du flux d'air forcé afin d'améliorer le refroidissement et de tester différentes stratégies de régulation.</p></article>
+          <article class="card"><h3>Résistance chauffante</h3><p>Simulation de la source thermique du processeur dans le démonstrateur physique.</p></article>
+          <article class="card"><h3>Alimentation 12V</h3><p>Source de puissance pour les actionneurs, séparée de l'alimentation logique du Raspberry Pi.</p></article>
+          <article class="card"><h3>Carte de prototypage</h3><p>Assemblage des résistances 10kΩ, distribution des connexions et sécurisation du câblage.</p></article>
+        </div>
+
+        <div class="grid-2" style="margin-top:22px;align-items:start">
+          <div style="display:grid;gap:12px">
+            <details open class="accent-cyan">
+              <summary>Mesure et acquisition</summary>
+              <div class="details-body">
+                <p>La chaîne d'acquisition repose sur trois thermistances NTC réparties dans le système afin de suivre l'évolution thermique à trois endroits clés : l'entrée d'air, la zone de chauffe et la sortie d'air.</p>
+                <ul>
+                  <li><strong>T1</strong> : température d'entrée du flux d'air.</li>
+                  <li><strong>T2</strong> : température au niveau de la résistance / processeur simulé.</li>
+                  <li><strong>T3</strong> : température de sortie du système.</li>
+                  <li>Les mesures analogiques sont converties par le <strong>MCP3008</strong> puis transmises au Raspberry Pi via le <strong>bus SPI</strong>.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="accent-amber">
+              <summary>Alimentation du prototype</summary>
+              <div class="details-body">
+                <p>Une alimentation 12V dédiée est utilisée pour les éléments de puissance. Cette séparation évite de surcharger la partie logique et améliore la stabilité du système.</p>
+                <ul>
+                  <li>Le <strong>12V</strong> alimente le ventilateur et la résistance chauffante via le L298N.</li>
+                  <li>Le <strong>Raspberry Pi 5</strong> conserve sa propre alimentation.</li>
+                  <li>La mise à la masse commune permet de garantir une référence électrique cohérente sur l'ensemble du montage.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="accent-teal">
+              <summary>Pilotage et commande</summary>
+              <div class="details-body">
+                <p>Le Raspberry Pi envoie les signaux de commande vers le pont en H afin de gérer séparément la chauffe et la ventilation.</p>
+                <ul>
+                  <li><strong>Chauffage</strong> : activation et modulation de puissance pour simuler la dissipation du processeur.</li>
+                  <li><strong>Ventilation</strong> : réglage du débit d'air pour comparer plusieurs régimes de refroidissement.</li>
+                  <li>Cette architecture permet une régulation classique, puis une extension vers une logique plus prédictive via le jumeau numérique.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="accent-amber">
+              <summary>Inventaire matériel</summary>
+              <div class="details-body">
+                <ul>
+                  <li>1 kit Raspberry Pi</li>
+                  <li>3 thermistances</li>
+                  <li>1 pont en H</li>
+                  <li>1 alimentation, 1 ventilateur, 1 convertisseur ADC et 1 adaptateur</li>
+                  <li>1 plaque chauffante, 1 carte de prototypage, des câbles, de la gaine thermorétractable, des boîtiers plastiques et 3 résistances 10kΩ</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <div class="panel compact-panel">
+            <h3>Lecture rapide</h3>
+            <div class="highlight-list">
+              <li><strong>Mesurer :</strong> les trois NTC permettent de suivre la dynamique thermique du système.</li>
+              <li><strong>Convertir :</strong> le MCP3008 transforme les mesures analogiques en données exploitables.</li>
+              <li><strong>Commander :</strong> le L298N pilote séparément le ventilateur et la résistance chauffante.</li>
+              <li><strong>Superviser :</strong> le Raspberry Pi centralise l'acquisition, la régulation et l'interface logicielle.</li>
+            </div>
+            <div class="soft-divider"></div>
+            <p class="mini-note">Cette présentation en volets réduit l'effet “gros pavé” et rend la lecture plus progressive.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="logiciel">
+      <div class="container grid-2">
+        <div class="panel">
+          <div class="section-head" style="margin-bottom:8px">
+            <span class="kicker">Logiciel</span>
+            <h2>Supervision, régulation et acquisition</h2>
+          </div>
+          <p>
+            Le logiciel embarqué a été développé en Python pour regrouper l'ensemble des fonctions du système : lecture des capteurs, affichage temps réel, commande de la résistance chauffante et du ventilateur, sauvegarde des données et exploitation du jumeau numérique.
+          </p>
+          <div class="highlight-list">
+            <li><strong>Interface graphique :</strong> affichage des températures, états système et courbes de suivi.</li>
+            <li><strong>Commande matériel :</strong> contrôle PWM des actionneurs et régulation à consigne.</li>
+            <li><strong>Acquisition continue :</strong> lecture de T1, T2 et T3 via le MCP3008.</li>
+            <li><strong>Sauvegarde :</strong> enregistrement régulier des données pour l'apprentissage et l'analyse.</li>
+            <li><strong>Prédiction :</strong> comparaison entre la température réelle et celle estimée par le modèle.</li>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:14px">
+          <div class="panel compact-panel">
+            <h3>Stack technique</h3>
+            <div class="chip-row">
+              <span class="chip">Python 3</span>
+              <span class="chip">Tkinter</span>
+              <span class="chip">Matplotlib</span>
+              <span class="chip">pandas</span>
+              <span class="chip">numpy</span>
+              <span class="chip">scikit-learn</span>
+              <span class="chip">RPi.GPIO</span>
+              <span class="chip">spidev</span>
+              <span class="chip">joblib</span>
+            </div>
+          </div>
+
+          <div class="panel compact-panel">
+            <h3>Pourquoi cette stack ?</h3>
+            <ul class="highlight-list">
+              <li><strong>Tkinter</strong> pour une interface simple à embarquer sur Raspberry Pi.</li>
+              <li><strong>Matplotlib</strong> pour visualiser l'évolution des températures et des prédictions.</li>
+              <li><strong>pandas / numpy</strong> pour préparer et structurer les données d'apprentissage.</li>
+              <li><strong>scikit-learn</strong> pour entraîner et comparer les modèles de prédiction.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ia">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Intelligence artificielle</span>
+          <h2>Prédire la température critique avant la mesure complète</h2>
+          <p>
+            Trois modèles ont été comparés pour estimer la température T2 à partir des variables du système. L'objectif est d'anticiper le comportement thermique et de soutenir une régulation plus proactive.
+          </p>
+        </div>
+
+        <div class="model-grid">
+          <article class="card model-card winner">
+            <h3>Random Forest</h3>
+            <p>Modèle retenu pour son bon compromis entre précision, robustesse et facilité d'intégration.</p>
+            <div class="score">
+              <div class="row-score"><span>MAE</span><strong>0,252°C</strong></div>
+              <div class="row-score"><span>R²</span><strong>0,867</strong></div>
+              <div class="row-score"><span>Type</span><strong>arbres supervisés</strong></div>
+            </div>
+          </article>
+          <article class="card model-card">
+            <h3>Gradient Boosting</h3>
+            <p>Très performant, mais légèrement moins favorable ici en temps de calcul et en simplicité d'exploitation.</p>
+            <div class="score">
+              <div class="row-score"><span>MAE</span><strong>0,263°C</strong></div>
+              <div class="row-score"><span>R²</span><strong>0,855</strong></div>
+              <div class="row-score"><span>Type</span><strong>apprentissage séquentiel</strong></div>
+            </div>
+          </article>
+          <article class="card model-card">
+            <h3>Réseau de neurones</h3>
+            <p>Moins concluant sur ce jeu de données, probablement à cause d'une diversité insuffisante des cas d'apprentissage.</p>
+            <div class="score">
+              <div class="row-score"><span>MAE</span><strong>0,432°C</strong></div>
+              <div class="row-score"><span>R²</span><strong>0,059</strong></div>
+              <div class="row-score"><span>Type</span><strong>MLPRegressor</strong></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="two-col-list">
+          <div class="info-box">
+            <h4>Limites identifiées</h4>
+            <ul>
+              <li>Nombre réduit de combinaisons expérimentales.</li>
+              <li>Plage de température d'entrée peu étendue.</li>
+              <li>Jeu de données déséquilibré sur certains états de fonctionnement.</li>
+              <li>Risque d'extrapolation hors du domaine appris.</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h4>Réponses apportées</h4>
+            <ul>
+              <li>Interpolation et enrichissement du jeu de données.</li>
+              <li>Rééquilibrage des situations minoritaires.</li>
+              <li>Détection des cas éloignés du domaine d'apprentissage.</li>
+              <li>Ajout d'une estimation d'incertitude pour sécuriser l'usage.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="organisation">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Organisation</span>
+          <h2>Répartition des rôles et avancement du projet</h2>
+          <p>L'organisation du groupe a reposé sur une répartition claire des responsabilités, un suivi d'avancement et un planning projet. Le document d'organisation présente notamment les rôles de chaque membre, l'état d'avancement des tâches, les échéances et le temps investi.</p>
+        </div>
+
+        <div class="timeline-grid">
+          <article class="timeline-card">
+            <span class="tag tag-cyan">Équipe</span>
+            <h4>Répartition des rôles</h4>
+            <p><strong>Clément MADORRE</strong> : chef de projet, électronique, électrique, programmation et IA.</p>
+            <p><strong>Dildar AYDIN</strong> : technicien électronique et aide IA.</p>
+            <p><strong>Samuel VIDAL</strong> : responsable mécanique et modélisation.</p>
+            <p><strong>Guillaume DE CIBEINS</strong> : responsable montage.</p>
+            <p><strong>Inès TISSOT</strong> : interface, communication et développement durable.</p>
+          </article>
+
+          <article class="timeline-card">
+            <span class="tag tag-amber">Charge projet</span>
+            <h4>Temps et suivi</h4>
+            <p>30 heures de projet et 10 heures d'autonomie, avec un suivi des tâches jusqu'à la soutenance finale.</p>
+          </article>
+
+          <article class="timeline-card">
+            <span class="tag tag-teal">Travaux réalisés</span>
+            <h4>Exemples de tâches suivies</h4>
+            <p>Liste matériel, schéma de câblage, SolidWorks, conception de la boîte, câblage, implantation Fritzing, code Python, interface Tkinter, base de données, tests, vidéo, site web et soutenance.</p>
+          </article>
+
+          <article class="timeline-card">
+            <span class="tag tag-cyan">Document associé</span>
+            <h4>Planning et organisation</h4>
+            <p>Le document PDF d'organisation peut être consulté directement pour montrer la méthode de gestion, l'avancement et la coordination de l'équipe.</p>
+            <p style="margin-top:10px"><a class="btn btn-secondary" href="organisation.pdf" target="_blank">Voir l'organisation</a></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo">
+      <div class="container grid-2">
+        <div class="panel">
+          <div class="section-head" style="margin-bottom:8px">
+            <span class="kicker">Démonstration</span>
+            <h2>Interface IHM du jumeau numérique</h2>
+          </div>
+          <p>
+            Cette vidéo présente l’interface utilisateur du système : réglage des paramètres, affichage des températures en temps réel et enregistrement des données pour l’apprentissage du modèle.
+          </p>
+
+          <div style="margin-top:18px;border-radius:18px;overflow:hidden;border:1px solid rgba(108,229,255,.14)">
+            <iframe width="100%" height="360" src="https://www.youtube.com/embed/-Zq_KrCnfNw" title="Démonstration interface jumeau numérique" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Ce que montre la vidéo</h3>
+          <ul class="highlight-list">
+            <li><strong>Interface IHM :</strong> visualisation des températures T1, T2, T3 en direct.</li>
+            <li><strong>Réglage :</strong> modification de la consigne et des paramètres système.</li>
+            <li><strong>Commande :</strong> pilotage du ventilateur et de la résistance.</li>
+            <li><strong>Enregistrement :</strong> sauvegarde des données pour l’apprentissage du modèle IA.</li>
+            <li><strong>Comparaison :</strong> lien entre système réel et jumeau numérique.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="documents">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Livrables</span>
+          <h2>Documents, code et ressources du projet</h2>
+          <p>Cette page centralise les supports principaux du projet : rapport d'étude, soutenance, code source, organisation d'équipe et fiche composants.</p>
+        </div>
+
+        <div class="docs-grid">
+          <article class="card">
+            <div class="avatar">📝</div>
+            <h3>Rapport d'étude</h3>
+            <p class="small">Présentation complète du projet : objectifs, CAO, choix des matériaux, électronique, fabrication et conclusion.</p>
+            <a class="btn btn-secondary" href="rapport.pdf" target="_blank">Ouvrir le rapport</a>
+          </article>
+          <article class="card">
+            <div class="avatar">💻</div>
+            <h3>Code source Python</h3>
+            <p class="small">Interface de supervision, lecture capteurs, contrôle des actionneurs et jumeau numérique prédictif exécuté sur Raspberry Pi.</p>
+            <a class="btn btn-secondary" href="jumeau.py">Télécharger le code</a>
+          </article>
+          <article class="card">
+            <div class="avatar">📦</div>
+            <h3>Kit de composants</h3>
+            <p class="small">Inventaire du matériel utilisé pour réaliser le prototype électronique et thermique.</p>
+            <a class="btn btn-secondary" href="composants.pdf" target="_blank">Consulter la fiche</a>
+          </article>
+          <article class="card">
+            <div class="avatar">📅</div>
+            <h3>Organisation du projet</h3>
+            <p class="small">Planning, suivi d'avancement, répartition des tâches et coordination du groupe.</p>
+            <a class="btn btn-secondary" href="organisation.pdf" target="_blank">Ouvrir l'organisation</a>
+          </article>
+          <article class="card">
+            <div class="avatar">🔌</div>
+            <h3>Schéma électrique</h3>
+            <p class="small">Schéma de câblage détaillé de l'architecture électronique du prototype.</p>
+            <a class="btn btn-secondary" href="schema.png" target="_blank">Voir le schéma</a>
+          </article>
+          <article class="card">
+            <div class="avatar">📊</div>
+            <h3>Soutenance intégrée</h3>
+            <p class="small">La soutenance est affichée directement ci-dessous dans la page grâce au format PDF.</p>
+            <a class="btn btn-secondary" href="soutenance.pdf" target="_blank">Ouvrir le PDF seul</a>
+          </article>
+        </div>
+
+        <div class="pdf-viewer">
+          <iframe src="soutenance.pdf#view=FitH" title="Soutenance finale du projet"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-card">
+        <p><strong>Jumeau Numérique Thermique — Équipe 14</strong></p>
+        <p class="small" style="margin-top:8px">ICAM Grand Paris Sud · Promotion 2026</p>
+        <p class="small" style="margin-top:8px">Réalisé par Clément MADORRE </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const network = document.getElementById('dataNetwork');
+    const points = [[12,18],[24,30],[38,20],[52,34],[67,18],[82,28],[18,62],[34,72],[50,58],[66,72],[82,64],[28,48],[72,48]];
+    const links = [[0,1],[1,2],[2,3],[3,4],[4,5],[1,11],[11,8],[8,12],[12,10],[6,7],[7,8],[8,9],[9,10],[3,8],[2,8],[4,12]];
+
+    points.forEach((p, i) => {
+      const node = document.createElement('div');
+      node.className = 'node';
+      node.style.left = p[0] + '%';
+      node.style.top = p[1] + '%';
+      network.appendChild(node);
+
+      if (i % 3 === 0) {
+        const pulse = document.createElement('div');
+        pulse.className = 'pulse';
+        pulse.style.left = p[0] + '%';
+        pulse.style.top = p[1] + '%';
+        pulse.style.animationDelay = (i * .6) + 's';
+        network.appendChild(pulse);
+      }
+    });
+
+    links.forEach((pair, i) => {
+      const [a,b] = pair;
+      const p1 = points[a];
+      const p2 = points[b];
+      const dx = p2[0] - p1[0];
+      const dy = p2[1] - p1[1];
+      const len = Math.sqrt(dx*dx + dy*dy);
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+      const line = document.createElement('div');
+      line.className = 'link';
+      line.style.left = p1[0] + '%';
+      line.style.top = p1[1] + '%';
+      line.style.width = len + '%';
+      line.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+      line.style.animation = `flow ${3 + (i % 4)}s linear ${i * .2}s infinite`;
+      network.appendChild(line);
+    });
+  </script>
+</body>
+</html>
