@@ -107,10 +107,58 @@ nav {
   max-width: 1100px;
   margin: 0 auto;
   padding: 120px 40px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.hero-top {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 70px;
   align-items: center;
+}
+
+/* ─── PORTRAIT ─── */
+.hero-portrait {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.hero-portrait img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  filter: grayscale(8%) contrast(1.02);
+  border: 1px solid rgba(200, 150, 60, 0.25);
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+  position: relative;
+  z-index: 2;
+}
+
+.hero-portrait::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  right: -18px;
+  bottom: -18px;
+  border: 1px solid rgba(200, 150, 60, 0.45);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.hero-portrait::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: linear-gradient(160deg, transparent 55%, rgba(13,31,60,0.35) 100%);
+  z-index: 3;
+  pointer-events: none;
 }
 
 .hero-tag {
@@ -217,6 +265,7 @@ nav {
 
 .hero-stats {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
@@ -699,7 +748,8 @@ footer span { color: rgba(200,150,60,0.6); }
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
-  .hero-content { grid-template-columns: 1fr; gap: 40px; }
+  .hero-top { grid-template-columns: 1fr; gap: 40px; }
+  .hero-portrait { order: -1; max-width: 240px; }
   .hero-stats { grid-template-columns: repeat(3, 1fr); }
   .projects-grid { grid-template-columns: 1fr; }
   .project-card.featured { grid-template-columns: 1fr; }
@@ -735,19 +785,24 @@ footer span { color: rgba(200,150,60,0.6); }
 <section class="hero">
   <div class="hero-grid"></div>
   <div class="hero-content">
-    <div>
-      <div class="hero-tag">Disponible · CDI & CDD</div>
-      <h1 class="hero-name">Clément<br><em>MADORRE</em></h1>
-      <p class="hero-title">Ingénieur Généraliste — ICAM Grand Paris Sud · Promotion 2026</p>
-      <p class="hero-bio">
-        Actuellement en 5ᵉ année d'école d'ingénieur, j'allie compétences techniques en électronique, mécatronique et programmation à une expertise en gestion de projet acquise chez Thales. Je cherche à intégrer une structure ambitieuse où ingénierie et leadership se rejoignent.
-      </p>
-      <div class="hero-cta">
-        <a href="#projets" class="btn-primary">
-          Voir mes projets
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="https://www.linkedin.com/in/clément-madorre-2003c0310/" target="_blank" class="btn-outline">LinkedIn</a>
+    <div class="hero-top">
+      <div class="hero-text">
+        <div class="hero-tag">Disponible · CDI & CDD</div>
+        <h1 class="hero-name">Clément<br><em>MADORRE</em></h1>
+        <p class="hero-title">Ingénieur Généraliste — ICAM Grand Paris Sud · Promotion 2026</p>
+        <p class="hero-bio">
+          Actuellement en 5ᵉ année d'école d'ingénieur, j'allie compétences techniques en électronique, mécatronique et programmation à une expertise en gestion de projet acquise chez Thales. Je cherche à intégrer une structure ambitieuse où ingénierie et leadership se rejoignent.
+        </p>
+        <div class="hero-cta">
+          <a href="#projets" class="btn-primary">
+            Voir mes projets
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/clément-madorre-2003c0310/" target="_blank" class="btn-outline">LinkedIn</a>
+        </div>
+      </div>
+      <div class="hero-portrait">
+        <img src="clement_portrait.jpg" alt="Portrait de Clément MADORRE, ingénieur généraliste">
       </div>
     </div>
     <div class="hero-stats">
