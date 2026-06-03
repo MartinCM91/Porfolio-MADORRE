@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jumeau Numérique Thermique — Équipe 14 | ICAM GPS</title>
+  <title>Jumeau Numérique Thermique - Équipe 14 | ICAM GPS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   <meta name="description" content="Projet de jumeau numérique thermique avec IA prédictive, piloté sur Raspberry Pi, conçu par l'Équipe 14 de l'ICAM Grand Paris Sud." />
   <style>
@@ -126,6 +126,10 @@
       padding:10px 14px;border-radius:999px;transition:.25s ease;display:inline-block;border:1px solid transparent;
     }
     nav a:hover,nav a:focus{color:var(--text);background:rgba(108,229,255,.08);border-color:rgba(108,229,255,.18);outline:none}
+
+    .nav-toggle{display:none;align-items:center;gap:9px;background:rgba(108,229,255,.12);border:1px solid rgba(108,229,255,.28);color:var(--cyan);padding:10px 18px;border-radius:999px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;flex:0 0 auto}
+    .nav-toggle:hover{background:rgba(108,229,255,.2)}
+    .nav-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2}
 
     .hero{padding:82px 0 54px;position:relative}
     .hero-grid{display:grid;grid-template-columns:1.25fr .95fr;gap:26px;align-items:stretch}
@@ -310,9 +314,26 @@
       .timeline-grid{grid-template-columns:1fr}
     }
 
+    @media (max-width:980px){
+      .nav-toggle{display:inline-flex}
+      .topbar-inner{flex-wrap:nowrap;gap:12px}
+      .topbar-left{flex-wrap:nowrap;min-width:0;flex:1 1 auto}
+      .brand-text strong{font-size:.88rem}
+      nav#mainNav{
+        position:absolute;top:100%;left:0;right:0;
+        background:rgba(5,15,24,.98);
+        backdrop-filter:blur(16px);
+        border-bottom:1px solid rgba(108,229,255,.18);
+        box-shadow:0 24px 40px -20px rgba(0,0,0,.7);
+        max-height:0;overflow:hidden;transition:max-height .35s ease;
+      }
+      .topbar.nav-open nav#mainNav{max-height:78vh;overflow:auto}
+      nav#mainNav ul{flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;gap:6px;padding:14px 16px}
+      nav#mainNav a{display:block;width:100%;padding:13px 16px;border:1px solid rgba(108,229,255,.1)}
+    }
+
     @media (max-width:760px){
-      .topbar-inner{flex-direction:column;align-items:flex-start}
-      nav ul{justify-content:flex-start}
+      .brand{display:none}
       .hero{padding-top:46px}
       .hero-card,.panel,.card,.timeline-card,.media-card{padding:22px}
       .hero-stats,.metric-grid,.team-grid,.component-grid,.docs-grid,.model-grid,.two-col-list{grid-template-columns:1fr}
@@ -344,14 +365,17 @@
       border-color:rgba(108,229,255,.3);
       transform:translateY(-1px);
     }
-  </style>
+  
+    /* Texte justifie */
+    p,.lead,li,.small,.project-desc{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
+</style>
 </head>
 <body>
   <div class="data-network" id="dataNetwork"></div>
 
   <header class="topbar">
   <div class="topbar-inner">
-    <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+    <div class="topbar-left" style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
       <a href="index.html" class="home-link">🏠 Accueil</a>
 
       <div class="brand">
@@ -368,7 +392,12 @@
       </div>
     </div>
 
-    <nav aria-label="Navigation principale">
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mainNav">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Sommaire
+    </button>
+
+    <nav id="mainNav" aria-label="Navigation principale">
       <ul>
         <li><a href="#projet">Projet</a></li>
         <li><a href="#equipe">Équipe</a></li>
@@ -388,7 +417,7 @@
     <section class="hero" id="projet">
       <div class="container hero-grid">
         <div class="hero-card">
-          <div class="eyebrow">Promotion 2026 · Projet 2024–2025</div>
+          <div class="eyebrow">Promotion 2026 · Projet 2024-2025</div>
           <h1>Un jumeau numérique thermique piloté par l'IA</h1>
           <p class="lead">
             Ce projet vise à concevoir un système capable de reproduire, suivre et anticiper le comportement thermique d'un processeur simulé. Le jumeau physique, l'électronique embarquée, la modélisation et l'algorithme prédictif travaillent ensemble pour améliorer la régulation en temps réel.
@@ -407,7 +436,7 @@
 
         <div class="hero-side">
           <div class="hero-card twin-visual" style="padding:20px">
-            <div class="visual-title">🌡️ Simulation thermique — temps réel</div>
+            <div class="visual-title">🌡️ Simulation thermique - temps réel</div>
             <canvas id="thermalCanvas" width="420" height="310" style="width:100%;border-radius:14px;display:block;background:#030e17;"></canvas>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px">
               <div style="background:rgba(255,255,255,.04);border:1px solid rgba(108,229,255,.12);border-radius:12px;padding:12px;text-align:center">
@@ -552,8 +581,8 @@
   </div>
 
   <div class="media-card">
-    <img src="PCB.png" alt="Schéma de câblage Fritzing de la PCB — Raspberry Pi 5, L298N, MCP3008, capteurs NTC" style="border-radius:12px;width:100%;cursor:pointer" onclick="window.open(this.src,'_blank')">
-    <div class="media-caption">Schéma Fritzing de la PCB — cliquer pour agrandir · Raspberry Pi 5, L298N, MCP3008, sondes NTC</div>
+    <img src="schema.png" alt="Schéma de câblage - Raspberry Pi 5, L298N, MCP3008, capteurs NTC" style="border-radius:12px;width:100%;cursor:pointer" onclick="window.open(this.src,'_blank')">
+    <div class="media-caption">Schéma de câblage - cliquer pour agrandir · Raspberry Pi 5, L298N, MCP3008, sondes NTC</div>
   </div>
 
 </aside>
@@ -667,6 +696,11 @@
         </div>
 
         <div style="display:grid;gap:14px">
+          <div class="media-card">
+            <img src="ecran ihm.png" alt="Écran tactile 7 pouces embarqué pour l'IHM du jumeau numérique" style="cursor:pointer" onclick="window.open(this.src,'_blank')">
+            <div class="media-caption">Écran tactile 7" HD embarqué qui héberge l'IHM Python</div>
+          </div>
+
           <div class="panel compact-panel">
             <h3>Stack technique</h3>
             <div class="chip-row">
@@ -849,6 +883,32 @@
           </ul>
         </div>
       </div>
+
+      <div class="container" style="margin-top:26px">
+        <div class="section-head" style="margin-bottom:18px">
+          <span class="kicker">Vidéos complémentaires</span>
+          <h2>Données, IA et présentation complète</h2>
+          <p>Deux vidéos pour aller plus loin : la construction du jeu de données qui alimente l'intelligence artificielle, puis une présentation intégrale du projet.</p>
+        </div>
+
+        <div class="grid-2" style="align-items:start">
+          <div class="panel">
+            <h3>📊 Insertion des données pour l'IA</h3>
+            <p class="small">Acquisition et structuration des données capteurs servant à entraîner le modèle prédictif.</p>
+            <div style="margin-top:14px;border-radius:18px;overflow:hidden;border:1px solid rgba(108,229,255,.14)">
+              <iframe width="100%" height="320" src="https://www.youtube.com/embed/dJ1ADeLQPzs" title="Insertion des données pour construire l'IA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <div class="panel" style="border-color:rgba(255,184,77,.35);box-shadow:0 0 0 1px rgba(255,184,77,.12)">
+            <h3>🎬 Présentation complète du projet</h3>
+            <p class="small">Le projet de bout en bout : code, simulation thermique, intelligence artificielle et interface IHM.</p>
+            <div style="margin-top:14px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,184,77,.25)">
+              <iframe width="100%" height="320" src="https://www.youtube.com/embed/B-dnveMHdhc" title="Présentation complète du jumeau numérique" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="documents">
@@ -908,9 +968,10 @@
   <footer>
     <div class="container">
       <div class="footer-card">
-        <p><strong>Jumeau Numérique Thermique — Équipe 14</strong></p>
+        <p><strong>Jumeau Numérique Thermique - Équipe 14</strong></p>
         <p class="small" style="margin-top:8px">ICAM Grand Paris Sud · Promotion 2026</p>
         <p class="small" style="margin-top:8px">Réalisé par Clément MADORRE </p>
+        <a href="index.html" class="btn btn-primary" style="margin-top:16px;display:inline-block">🏠 Retour à l'accueil</a>
       </div>
     </div>
   </footer>
@@ -958,6 +1019,25 @@
   </script>
 
   <script>
+  // ═══════════════════════════════════════
+  // SOMMAIRE TOGGLE (mobile)
+  // ═══════════════════════════════════════
+  (function(){
+    const btn = document.getElementById('navToggle');
+    const bar = document.querySelector('.topbar');
+    if(!btn || !bar) return;
+    btn.addEventListener('click', function(){
+      const open = bar.classList.toggle('nav-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.querySelectorAll('#mainNav a').forEach(function(a){
+      a.addEventListener('click', function(){
+        bar.classList.remove('nav-open');
+        btn.setAttribute('aria-expanded','false');
+      });
+    });
+  })();
+
   // ═══════════════════════════════════════
   // THERMAL CANVAS SIMULATION
   // ═══════════════════════════════════════
@@ -1211,7 +1291,7 @@
 
       models.forEach((m,i)=>{
         const xBase = 40 + i*(barW*2+20);
-        // MAE bar (inverted — lower is better, so we show 1-mae/max)
+        // MAE bar (inverted - lower is better, so we show 1-mae/max)
         const maeH = ((1-mae[i]/maxMAE)*0.9) * (H-50) * ease;
         const r2H  = r2[i] * (H-50) * ease;
 
@@ -1239,8 +1319,8 @@
       ctx.fillStyle='rgba(108,229,255,0.7)'; ctx.fillRect(W-160,5,10,8);
       ctx.fillStyle='rgba(108,229,255,0.3)'; ctx.fillRect(W-160,18,10,8);
       ctx.fillStyle='rgba(184,207,221,0.7)'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='left';
-      ctx.fillText('MAE (erreur — plus bas = mieux)',W-145,13);
-      ctx.fillText('R² (précision — plus haut = mieux)',W-145,26);
+      ctx.fillText('MAE (erreur - plus bas = mieux)',W-145,13);
+      ctx.fillText('R² (précision - plus haut = mieux)',W-145,26);
 
       // winner star
       if(ease>0.8){
