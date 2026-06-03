@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Écologie Intégrale - Clément MADORRE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --green-900:#1b3325;
+  --green-700:#2c4c38;
+  --green-600:#3a6147;
+  --sage:#7e9b6b;
+  --clay:#bd6346;
+  --ochre:#c79a4f;
+  --cream:#f6f0e5;
+  --cream-2:#efe6d4;
+  --paper:#fbf8f1;
+  --ink:#2a2c22;
+  --ink-soft:#5e6052;
+  --radius:20px;
+  --shadow:0 24px 50px -28px rgba(43,60,40,.35);
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'Mulish',sans-serif;
+  color:var(--ink);
+  background:var(--cream);
+  line-height:1.75;
+  font-size:16px;
+  overflow-x:hidden;
+}
+
+/* organic background atmosphere */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 45% at 12% 8%, rgba(126,155,107,.20), transparent 60%),
+    radial-gradient(ellipse 45% 40% at 90% 15%, rgba(199,154,79,.16), transparent 60%),
+    radial-gradient(ellipse 55% 50% at 80% 92%, rgba(189,99,70,.10), transparent 62%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.4;
+  background-image:radial-gradient(rgba(43,60,40,.05) 1px, transparent 1px);
+  background-size:26px 26px;
+}
+
+.wrap{width:min(100% - 40px, 1080px);margin:0 auto}
+
+p{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(246,240,229,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(43,60,40,.12);
+}
+.topbar-inner{
+  width:min(100% - 32px,1080px);margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:13px 0;
+}
+.home-link{
+  display:inline-flex;align-items:center;gap:8px;
+  text-decoration:none;color:var(--green-700);font-weight:700;font-size:.95rem;
+  background:rgba(126,155,107,.16);border:1px solid rgba(126,155,107,.4);
+  padding:9px 16px;border-radius:999px;transition:.2s;
+}
+.home-link:hover{background:rgba(126,155,107,.28);transform:translateY(-1px)}
+.topbar-tag{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:.85rem;font-weight:600}
+.leaf-mark{
+  width:34px;height:34px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--green-600),var(--sage));
+  display:grid;place-items:center;color:#fff;font-size:1rem;
+}
+@media(max-width:560px){.topbar-tag span{display:none}}
+
+/* ── HERO ── */
+.hero{padding:74px 0 60px;position:relative}
+.eyebrow{
+  display:inline-block;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  font-size:.74rem;color:var(--clay);margin-bottom:20px;
+}
+.hero h1{
+  font-family:'Fraunces',serif;font-weight:600;
+  font-size:clamp(2.6rem,6vw,4.4rem);line-height:1.04;color:var(--green-900);
+  letter-spacing:-.01em;margin-bottom:18px;
+}
+.hero h1 em{font-style:italic;color:var(--clay)}
+.hero .lead{
+  font-size:1.12rem;color:var(--ink-soft);max-width:640px;margin-bottom:30px;
+  font-weight:400;
+}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  font-weight:700;font-size:.92rem;padding:13px 26px;border-radius:999px;transition:.2s;
+}
+.btn-primary{background:var(--green-700);color:var(--cream)}
+.btn-primary:hover{background:var(--green-900);transform:translateY(-2px)}
+.btn-soft{background:transparent;color:var(--green-700);border:1.5px solid rgba(44,76,56,.35)}
+.btn-soft:hover{border-color:var(--green-700);transform:translateY(-2px)}
+
+/* photo placeholders */
+.photo-ph{
+  border:2px dashed rgba(126,155,107,.6);
+  background:rgba(126,155,107,.08);
+  border-radius:var(--radius);
+  display:grid;place-items:center;text-align:center;color:var(--green-700);
+  padding:26px;min-height:300px;
+}
+.photo-ph .ic{font-size:2.4rem;margin-bottom:8px}
+.photo-ph small{display:block;color:var(--ink-soft);font-weight:600;margin-top:6px;font-size:.8rem}
+.photo-ph b{font-size:1rem}
+
+/* ── SECTIONS ── */
+section{padding:60px 0}
+.kicker{
+  display:inline-block;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  font-size:.72rem;color:var(--sage);margin-bottom:12px;
+}
+.kicker.clay{color:var(--clay)}
+h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.9rem,3.6vw,2.7rem);color:var(--green-900);line-height:1.12;margin-bottom:16px}
+.section-intro{color:var(--ink-soft);max-width:640px;margin-bottom:36px}
+
+/* facts strip */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fact{
+  background:var(--paper);border:1px solid rgba(43,60,40,.1);border-radius:16px;
+  padding:22px;box-shadow:var(--shadow);
+}
+.fact .ic{font-size:1.5rem;margin-bottom:8px}
+.fact .lbl{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--sage);font-weight:700;margin-bottom:4px}
+.fact .val{font-family:'Fraunces',serif;font-weight:600;font-size:1.15rem;color:var(--green-900)}
+.fact .val.ph{color:var(--clay);font-style:italic;font-size:.95rem;font-family:'Mulish',sans-serif;font-weight:600}
+
+/* pillars */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pillar{
+  background:var(--paper);border:1px solid rgba(43,60,40,.1);border-radius:var(--radius);
+  padding:30px 28px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.pillar::before{content:"";position:absolute;top:0;left:0;right:0;height:4px}
+.pillar.eco::before{background:var(--sage)}
+.pillar.hum::before{background:var(--ochre)}
+.pillar.spi::before{background:var(--clay)}
+.pillar .badge{
+  width:56px;height:56px;border-radius:16px;display:grid;place-items:center;
+  font-size:1.5rem;margin-bottom:16px;
+}
+.pillar.eco .badge{background:rgba(126,155,107,.18)}
+.pillar.hum .badge{background:rgba(199,154,79,.18)}
+.pillar.spi .badge{background:rgba(189,99,70,.16)}
+.pillar h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:var(--green-900);margin-bottom:10px}
+.pillar p{color:var(--ink-soft);font-size:.96rem}
+
+/* engagement / text block */
+.block{
+  background:var(--paper);border:1px solid rgba(43,60,40,.1);border-radius:var(--radius);
+  padding:34px 36px;box-shadow:var(--shadow);
+}
+.block p+p{margin-top:14px}
+
+/* todo placeholders */
+.todo{
+  border:1.5px dashed var(--clay);background:rgba(189,99,70,.07);
+  border-radius:14px;padding:18px 20px;color:var(--green-900);
+}
+.todo .t{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--clay);margin-bottom:6px;font-size:.92rem;text-transform:uppercase;letter-spacing:.05em}
+.todo p,.todo span{color:var(--ink-soft);font-size:.95rem;text-align:left}
+.todo ul{margin:6px 0 0 18px;color:var(--ink-soft);font-size:.95rem}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gallery .photo-ph{min-height:200px}
+
+/* takeaways */
+.takeaways{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.take{
+  background:var(--paper);border:1px solid rgba(43,60,40,.1);border-radius:16px;
+  padding:22px 24px;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--shadow);
+}
+.take .ic{font-size:1.4rem;flex:0 0 auto}
+.take b{display:block;color:var(--green-900);font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;margin-bottom:2px}
+.take span{color:var(--ink-soft);font-size:.92rem}
+
+/* quote */
+.quote{
+  text-align:center;max-width:760px;margin:0 auto;padding:10px 0;
+}
+.quote blockquote{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+  font-size:clamp(1.3rem,2.8vw,1.9rem);color:var(--green-700);line-height:1.4;
+}
+.quote cite{display:block;margin-top:14px;font-style:normal;color:var(--ink-soft);font-size:.9rem;font-weight:600}
+
+/* documents */
+.doc-card{
+  background:var(--paper);border:1px solid rgba(43,60,40,.1);border-radius:var(--radius);
+  padding:28px 30px;box-shadow:var(--shadow);text-align:center;
+}
+.doc-card .ic{font-size:2rem;margin-bottom:10px}
+.doc-card h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:var(--green-900);margin-bottom:8px}
+.doc-card p{color:var(--ink-soft);max-width:520px;margin:0 auto 18px;text-align:center}
+
+/* footer */
+footer{padding:50px 0 60px;text-align:center}
+.foot-card{
+  background:linear-gradient(135deg,var(--green-700),var(--green-900));
+  color:var(--cream);border-radius:26px;padding:40px 30px;box-shadow:var(--shadow);
+}
+.foot-card h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.5rem;margin-bottom:8px}
+.foot-card p{color:rgba(246,240,229,.8);text-align:center}
+.foot-card .btn{margin-top:22px;background:var(--cream);color:var(--green-900)}
+.foot-card .btn:hover{background:#fff}
+
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:1fr;gap:32px}
+  .facts{grid-template-columns:repeat(2,1fr)}
+  .pillars{grid-template-columns:1fr}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .takeaways{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .facts{grid-template-columns:1fr}
+  .gallery{grid-template-columns:1fr}
+  .block,.foot-card{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="home-link">← Retour à l'accueil</a>
+    <div class="topbar-tag">
+      <span>Mission Écologie Intégrale</span>
+      <div class="leaf-mark">🌿</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Projet académique · ICAM · Écologie intégrale</span>
+        <h1>Mission <em>Écologie Intégrale</em></h1>
+        <p class="lead">
+          Un temps fort de mon parcours à l'ICAM : un camp où l'écologie ne se limite pas à l'environnement, mais relie le soin de la nature, la vie fraternelle et une dimension spirituelle. Une expérience humaine autant qu'une réflexion sur notre manière d'habiter le monde.
+        </p>
+        <div class="hero-cta">
+          <a href="#piliers" class="btn btn-primary">Découvrir la démarche</a>
+          <a href="#engagement" class="btn btn-soft">Mon engagement</a>
+        </div>
+      </div>
+      <div class="photo-ph">
+        <div>
+          <div class="ic">🏕️</div>
+          <b>Ta plus belle photo du camp</b>
+          <small>À ajouter · nomme-la par ex. <code>mei-hero.jpg</code></small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EN BREF -->
+  <section id="bref">
+    <div class="wrap">
+      <span class="kicker">En bref</span>
+      <h2>Le projet en quelques repères</h2>
+      <div class="facts">
+        <div class="fact"><div class="ic">📍</div><div class="lbl">Lieu</div><div class="val ph">à compléter</div></div>
+        <div class="fact"><div class="ic">📅</div><div class="lbl">Période</div><div class="val ph">à compléter</div></div>
+        <div class="fact"><div class="ic">⏳</div><div class="lbl">Durée</div><div class="val ph">à compléter</div></div>
+        <div class="fact"><div class="ic">👥</div><div class="lbl">Participants</div><div class="val ph">à compléter</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PILIERS -->
+  <section id="piliers">
+    <div class="wrap">
+      <span class="kicker">La démarche</span>
+      <h2>Une écologie <em style="font-style:italic;color:var(--clay)">intégrale</em></h2>
+      <p class="section-intro">
+        L'écologie intégrale propose de ne pas séparer le soin de la planète du soin des personnes et de la vie intérieure. La mission s'articule autour de trois dimensions qui se nourrissent les unes les autres.
+      </p>
+      <div class="pillars">
+        <div class="pillar eco">
+          <div class="badge">🌱</div>
+          <h3>Dimension écologique</h3>
+          <p>Reconnecter au vivant et à la nature, expérimenter la sobriété et le respect de la « maison commune », et porter un autre regard sur notre rapport aux ressources.</p>
+        </div>
+        <div class="pillar hum">
+          <div class="badge">🤝</div>
+          <h3>Dimension humaine</h3>
+          <p>Vivre en communauté, apprendre à s'écouter et à coopérer, prendre soin des autres et tisser des liens fraternels au-delà des différences.</p>
+        </div>
+        <div class="pillar spi">
+          <div class="badge">✨</div>
+          <h3>Dimension spirituelle</h3>
+          <p>Prendre du recul, faire une place au silence et à l'intériorité, et s'interroger sur le sens que l'on veut donner à son engagement et à sa vie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENGAGEMENT -->
+  <section id="engagement">
+    <div class="wrap">
+      <span class="kicker clay">Mon vécu</span>
+      <h2>Ce que j'y ai vécu</h2>
+      <div class="block">
+        <div class="todo">
+          <div class="t">✏️ À compléter</div>
+          <p>Raconte ici, à la première personne, ce que tu as concrètement vécu et fait pendant la mission. Quelques pistes pour m'aider à rédiger un beau texte à ta place :</p>
+          <ul>
+            <li>Quel était ton rôle ? (participant, organisateur, animateur d'un atelier...)</li>
+            <li>Une activité ou un moment marquant (chantier nature, veillée, temps de partage, randonnée...)</li>
+            <li>Une rencontre ou un échange qui t'a touché</li>
+            <li>Un défi que tu as relevé (organisation, vie en groupe, sortir de ta zone de confort...)</li>
+          </ul>
+          <p style="margin-top:8px">Donne-moi 4-5 phrases en vrac : je m'occupe de la mise en forme.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIE -->
+  <section id="galerie">
+    <div class="wrap">
+      <span class="kicker">En images</span>
+      <h2>Moments de la mission</h2>
+      <p class="section-intro">Les images font vivre l'expérience bien mieux que les mots. Ajoute 3 à 6 photos : paysages, vie de groupe, activités, temps forts.</p>
+      <div class="gallery">
+        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 1</b><small><code>mei-1.jpg</code></small></div></div>
+        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 2</b><small><code>mei-2.jpg</code></small></div></div>
+        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 3</b><small><code>mei-3.jpg</code></small></div></div>
+        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 4</b><small><code>mei-4.jpg</code></small></div></div>
+        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 5</b><small><code>mei-5.jpg</code></small></div></div>
+        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 6</b><small><code>mei-6.jpg</code></small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CITATION -->
+  <section>
+    <div class="wrap quote">
+      <blockquote>« Tout est lié : le cri de la Terre et le souci des plus fragiles ne font qu'un. »</blockquote>
+      <cite>Esprit de l'écologie intégrale — tu peux remplacer par une phrase qui t'a marqué pendant le camp</cite>
+    </div>
+  </section>
+
+  <!-- APPORTS -->
+  <section id="apports">
+    <div class="wrap">
+      <span class="kicker">Ce que ça m'a apporté</span>
+      <h2>Une expérience qui forme autrement</h2>
+      <p class="section-intro">Au-delà de la technique, des qualités humaines précieuses dans la vie professionnelle. (Suggestions à garder, modifier ou compléter selon ton ressenti.)</p>
+      <div class="takeaways">
+        <div class="take"><div class="ic">🧭</div><div><b>Prise de recul</b><span>Savoir s'arrêter, réfléchir au sens et aux priorités.</span></div></div>
+        <div class="take"><div class="ic">👂</div><div><b>Écoute & ouverture</b><span>Aller vers les autres, accueillir des points de vue différents.</span></div></div>
+        <div class="take"><div class="ic">🌍</div><div><b>Conscience écologique</b><span>Une attention concrète à l'impact et à la sobriété.</span></div></div>
+        <div class="take"><div class="ic">🤲</div><div><b>Engagement & vie collective</b><span>Donner de son temps, coopérer et tenir un projet à plusieurs.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCUMENTS -->
+  <section id="documents">
+    <div class="wrap">
+      <span class="kicker">Ressource</span>
+      <h2>Document du projet</h2>
+      <div class="doc-card">
+        <div class="ic">📄</div>
+        <h3>Rapport / livrable de la MEi</h3>
+        <p>Une fois ton PDF ajouté au projet, je l'intègre ici (lien d'ouverture + aperçu intégré dans la page, comme la soutenance du jumeau numérique).</p>
+        <div class="todo" style="display:inline-block;text-align:left">
+          <div class="t">✏️ À fournir</div>
+          <span>Joins-moi ton PDF (nomme-le par ex. <code>mei-rapport.pdf</code>) et je l'intègre.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-card">
+      <h3>Mission Écologie Intégrale</h3>
+      <p>ICAM Grand Paris Sud · Clément MADORRE</p>
+      <a href="index.html" class="btn">← Retour à l'accueil</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
