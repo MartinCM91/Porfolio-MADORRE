@@ -227,12 +227,41 @@ footer{padding:50px 0 60px;text-align:center}
   .pillars{grid-template-columns:1fr}
   .gallery{grid-template-columns:repeat(2,1fr)}
   .takeaways{grid-template-columns:1fr}
+  .docs{grid-template-columns:1fr}
 }
 @media(max-width:520px){
   .facts{grid-template-columns:1fr}
   .gallery{grid-template-columns:1fr}
   .block,.foot-card{padding:26px 22px}
 }
+/* fiche mission */
+.fiche{background:var(--paper);border:1px solid rgba(43,60,40,.1);border-radius:var(--radius);padding:26px 30px;box-shadow:var(--shadow)}
+.fiche h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.15rem;color:var(--green-900);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.fiche-row{display:flex;gap:13px;align-items:flex-start;padding:12px 0;border-top:1px solid rgba(43,60,40,.08)}
+.fiche-row:first-of-type{border-top:none;padding-top:0}
+.fiche-row .ic{font-size:1.15rem;flex:0 0 auto;margin-top:1px}
+.fiche-row .k{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--sage);font-weight:700;margin-bottom:1px}
+.fiche-row .v{color:var(--ink);font-weight:600;font-size:.95rem}
+
+/* video */
+.video-wrap{position:relative;width:100%;padding-top:56.25%;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(43,60,40,.12)}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* testimonial */
+.testimonial{background:linear-gradient(135deg,rgba(126,155,107,.18),rgba(199,154,79,.13));border:1px solid rgba(126,155,107,.32);border-radius:var(--radius);padding:32px 38px;box-shadow:var(--shadow)}
+.testimonial .mark{font-family:'Fraunces',serif;font-size:3rem;line-height:.4;color:var(--sage)}
+.testimonial p{font-family:'Fraunces',serif;font-style:italic;font-size:1.16rem;color:var(--green-900);line-height:1.5;margin:8px 0 16px;text-align:left}
+.testimonial .attr{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-weight:700;font-size:.9rem}
+.testimonial .attr .dot{width:9px;height:9px;border-radius:50%;background:var(--clay);flex:0 0 auto}
+
+/* documents */
+.docs{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.doc-mini{background:var(--paper);border:1px solid rgba(43,60,40,.1);border-radius:16px;padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.doc-mini .ic{font-size:1.6rem}
+.doc-mini h4{font-family:'Fraunces',serif;font-weight:600;font-size:1.06rem;color:var(--green-900)}
+.doc-mini p{color:var(--ink-soft);font-size:.9rem;margin-bottom:10px}
+.doc-mini a{margin-top:auto;align-self:flex-start;text-decoration:none;color:var(--green-700);font-weight:700;font-size:.88rem;border:1.5px solid rgba(44,76,56,.3);padding:9px 16px;border-radius:999px;transition:.2s}
+.doc-mini a:hover{background:var(--green-700);color:var(--cream)}
 </style>
 </head>
 <body>
@@ -253,36 +282,37 @@ footer{padding:50px 0 60px;text-align:center}
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <span class="eyebrow">Projet académique · ICAM · Écologie intégrale</span>
+        <span class="eyebrow">Projet académique · ICAM · Promo 2026 · Été 2025</span>
         <h1>Mission <em>Écologie Intégrale</em></h1>
         <p class="lead">
-          Un temps fort de mon parcours à l'ICAM : un camp où l'écologie ne se limite pas à l'environnement, mais relie le soin de la nature, la vie fraternelle et une dimension spirituelle. Une expérience humaine autant qu'une réflexion sur notre manière d'habiter le monde.
+          Une mission bénévole vécue avec l'association Saint Joseph des Tanneries : la préparation et l'animation d'un camp en montagne pour des enfants. Une expérience où l'écologie intégrale prend tout son sens - prendre soin des autres, vivre en communauté et grandir humainement.
         </p>
         <div class="hero-cta">
-          <a href="#piliers" class="btn btn-primary">Découvrir la démarche</a>
-          <a href="#engagement" class="btn btn-soft">Mon engagement</a>
+          <a href="#video" class="btn btn-primary">▶ Voir la vidéo</a>
+          <a href="#vecu" class="btn btn-soft">Mon vécu</a>
         </div>
       </div>
-      <div class="photo-ph">
-        <div>
-          <div class="ic">🏕️</div>
-          <b>Ta plus belle photo du camp</b>
-          <small>À ajouter · nomme-la par ex. <code>mei-hero.jpg</code></small>
-        </div>
+      <div class="fiche">
+        <h3>🏔️ La mission en bref</h3>
+        <div class="fiche-row"><span class="ic">🤝</span><div><span class="k">Structure d'accueil</span><span class="v">Association Saint Joseph des Tanneries - patronage, Paris 13e</span></div></div>
+        <div class="fiche-row"><span class="ic">🎯</span><div><span class="k">Projet</span><span class="v">Préparation, encadrement & animation d'un camp en montagne</span></div></div>
+        <div class="fiche-row"><span class="ic">📅</span><div><span class="k">Période</span><span class="v">Été 2025 - 2 semaines de camp + 1 semaine de préparation</span></div></div>
+        <div class="fiche-row"><span class="ic">🧒</span><div><span class="k">Public encadré</span><span class="v">40 jeunes de 6 à 12 ans, au sein de l'équipe d'animation</span></div></div>
       </div>
     </div>
   </section>
 
-  <!-- EN BREF -->
+  <!-- REPÈRES -->
   <section id="bref">
     <div class="wrap">
-      <span class="kicker">En bref</span>
-      <h2>Le projet en quelques repères</h2>
+      <span class="kicker">Repères</span>
+      <h2>Une action concrète, hors de ma sphère habituelle</h2>
+      <p class="section-intro">La MEI est un projet de 4ᵉ année à l'ICAM : une action bénévole de plusieurs semaines, au service d'une cause d'écologie intégrale, dans une association locale et en dehors de son cadre professionnel habituel.</p>
       <div class="facts">
-        <div class="fact"><div class="ic">📍</div><div class="lbl">Lieu</div><div class="val ph">à compléter</div></div>
-        <div class="fact"><div class="ic">📅</div><div class="lbl">Période</div><div class="val ph">à compléter</div></div>
-        <div class="fact"><div class="ic">⏳</div><div class="lbl">Durée</div><div class="val ph">à compléter</div></div>
-        <div class="fact"><div class="ic">👥</div><div class="lbl">Participants</div><div class="val ph">à compléter</div></div>
+        <div class="fact"><div class="ic">📍</div><div class="lbl">Cadre</div><div class="val">Camp en montagne</div></div>
+        <div class="fact"><div class="ic">⏳</div><div class="lbl">Durée</div><div class="val">3 semaines</div></div>
+        <div class="fact"><div class="ic">🧒</div><div class="lbl">Enfants</div><div class="val">40 (6-12 ans)</div></div>
+        <div class="fact"><div class="ic">🎒</div><div class="lbl">Rôle</div><div class="val">Animateur</div></div>
       </div>
     </div>
   </section>
@@ -293,62 +323,62 @@ footer{padding:50px 0 60px;text-align:center}
       <span class="kicker">La démarche</span>
       <h2>Une écologie <em style="font-style:italic;color:var(--clay)">intégrale</em></h2>
       <p class="section-intro">
-        L'écologie intégrale propose de ne pas séparer le soin de la planète du soin des personnes et de la vie intérieure. La mission s'articule autour de trois dimensions qui se nourrissent les unes les autres.
+        Inspirée de l'encyclique <em>Laudato Si'</em>, l'écologie intégrale propose de ne pas séparer le soin de la planète du soin des personnes et de la vie intérieure. Mon engagement s'est inscrit avant tout dans sa dimension humaine et sociale.
       </p>
       <div class="pillars">
         <div class="pillar eco">
           <div class="badge">🌱</div>
           <h3>Dimension écologique</h3>
-          <p>Reconnecter au vivant et à la nature, expérimenter la sobriété et le respect de la « maison commune », et porter un autre regard sur notre rapport aux ressources.</p>
+          <p>Prendre soin de la « maison commune », expérimenter la sobriété et porter un autre regard sur notre rapport au vivant et aux ressources.</p>
         </div>
         <div class="pillar hum">
           <div class="badge">🤝</div>
           <h3>Dimension humaine</h3>
-          <p>Vivre en communauté, apprendre à s'écouter et à coopérer, prendre soin des autres et tisser des liens fraternels au-delà des différences.</p>
+          <p>Au cœur de ma mission : vivre en communauté, prendre soin des plus jeunes, s'écouter et coopérer, tisser des liens au-delà des différences.</p>
         </div>
         <div class="pillar spi">
           <div class="badge">✨</div>
           <h3>Dimension spirituelle</h3>
-          <p>Prendre du recul, faire une place au silence et à l'intériorité, et s'interroger sur le sens que l'on veut donner à son engagement et à sa vie.</p>
+          <p>Faire une place à l'intériorité et au sens, à la rencontre de convictions différentes, et s'interroger sur ce que l'on veut transmettre.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ENGAGEMENT -->
-  <section id="engagement">
+  <!-- VÉCU -->
+  <section id="vecu">
     <div class="wrap">
       <span class="kicker clay">Mon vécu</span>
-      <h2>Ce que j'y ai vécu</h2>
+      <h2>Animateur, au service des enfants</h2>
       <div class="block">
-        <div class="todo">
-          <div class="t">✏️ À compléter</div>
-          <p>Raconte ici, à la première personne, ce que tu as concrètement vécu et fait pendant la mission. Quelques pistes pour m'aider à rédiger un beau texte à ta place :</p>
-          <ul>
-            <li>Quel était ton rôle ? (participant, organisateur, animateur d'un atelier...)</li>
-            <li>Une activité ou un moment marquant (chantier nature, veillée, temps de partage, randonnée...)</li>
-            <li>Une rencontre ou un échange qui t'a touché</li>
-            <li>Un défi que tu as relevé (organisation, vie en groupe, sortir de ta zone de confort...)</li>
-          </ul>
-          <p style="margin-top:8px">Donne-moi 4-5 phrases en vrac : je m'occupe de la mise en forme.</p>
-        </div>
+        <p>Pendant ce camp, j'ai fait partie de l'équipe d'animation chargée d'accompagner une quarantaine d'enfants. Concrètement : préparer et mener des activités et des grands jeux, encadrer un groupe au quotidien, et veiller à faire grandir chacun - dans ses relations aux autres comme dans son développement personnel.</p>
+        <p>Ce qui m'a le plus marqué, c'est de découvrir que chaque enfant a une qualité positive à apporter au groupe. J'ai appris à motiver et à révéler le potentiel de chacun, en restant attentif et à l'écoute - des enfants comme du reste de l'équipe. J'ai aussi beaucoup échangé avec des personnes aux convictions différentes des miennes, ce qui a élargi mon regard.</p>
+        <p>Au-delà des activités, je retiens les bons moments partagés : les grands jeux, les rigolades tardives avec l'équipe et les difficultés traversées ensemble. Une vraie aventure collective qui a rendu l'écologie intégrale très concrète : un engagement qui relie le soin des autres et le souci du bien commun.</p>
       </div>
     </div>
   </section>
 
-  <!-- GALERIE -->
-  <section id="galerie">
+  <!-- VIDÉO -->
+  <section id="video">
     <div class="wrap">
-      <span class="kicker">En images</span>
-      <h2>Moments de la mission</h2>
-      <p class="section-intro">Les images font vivre l'expérience bien mieux que les mots. Ajoute 3 à 6 photos : paysages, vie de groupe, activités, temps forts.</p>
-      <div class="gallery">
-        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 1</b><small><code>mei-1.jpg</code></small></div></div>
-        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 2</b><small><code>mei-2.jpg</code></small></div></div>
-        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 3</b><small><code>mei-3.jpg</code></small></div></div>
-        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 4</b><small><code>mei-4.jpg</code></small></div></div>
-        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 5</b><small><code>mei-5.jpg</code></small></div></div>
-        <div class="photo-ph"><div><div class="ic">📷</div><b>Photo 6</b><small><code>mei-6.jpg</code></small></div></div>
+      <span class="kicker">En vidéo</span>
+      <h2>La mission en images</h2>
+      <p class="section-intro">La vidéo de restitution réalisée dans le cadre du projet MEI.</p>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/zzres8BGmZg" title="Mission Écologie Intégrale - Clément MADORRE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- TÉMOIGNAGE -->
+  <section id="retour">
+    <div class="wrap">
+      <span class="kicker">Le regard de la structure d'accueil</span>
+      <h2>Ce qu'en dit l'association</h2>
+      <div class="testimonial">
+        <div class="mark">&ldquo;</div>
+        <p>Clément nous a impressionnés par son sens du bien commun et du service. Il a trouvé sa place dans l'équipe d'animation et a mis un point d'honneur à porter attention à chaque jeune. Toujours au service, à l'écoute, attentionné et volontaire - il s'investit à 100 % dans chacune de ses missions.</p>
+        <div class="attr"><span class="dot"></span>Association Saint Joseph des Tanneries · évaluation de la structure d'accueil</div>
       </div>
     </div>
   </section>
@@ -356,8 +386,8 @@ footer{padding:50px 0 60px;text-align:center}
   <!-- CITATION -->
   <section>
     <div class="wrap quote">
-      <blockquote>« Tout est lié : le cri de la Terre et le souci des plus fragiles ne font qu'un. »</blockquote>
-      <cite>Esprit de l'écologie intégrale — tu peux remplacer par une phrase qui t'a marqué pendant le camp</cite>
+      <blockquote>« Cette expérience m'a aidé à comprendre que l'écologie intégrale, c'est un engagement qui mêle protection de la nature et solidarité humaine. »</blockquote>
+      <cite>Clément MADORRE - à l'issue de la mission</cite>
     </div>
   </section>
 
@@ -366,12 +396,12 @@ footer{padding:50px 0 60px;text-align:center}
     <div class="wrap">
       <span class="kicker">Ce que ça m'a apporté</span>
       <h2>Une expérience qui forme autrement</h2>
-      <p class="section-intro">Au-delà de la technique, des qualités humaines précieuses dans la vie professionnelle. (Suggestions à garder, modifier ou compléter selon ton ressenti.)</p>
+      <p class="section-intro">Au-delà de la technique, des qualités humaines précieuses dans la vie professionnelle.</p>
       <div class="takeaways">
-        <div class="take"><div class="ic">🧭</div><div><b>Prise de recul</b><span>Savoir s'arrêter, réfléchir au sens et aux priorités.</span></div></div>
-        <div class="take"><div class="ic">👂</div><div><b>Écoute & ouverture</b><span>Aller vers les autres, accueillir des points de vue différents.</span></div></div>
-        <div class="take"><div class="ic">🌍</div><div><b>Conscience écologique</b><span>Une attention concrète à l'impact et à la sobriété.</span></div></div>
-        <div class="take"><div class="ic">🤲</div><div><b>Engagement & vie collective</b><span>Donner de son temps, coopérer et tenir un projet à plusieurs.</span></div></div>
+        <div class="take"><div class="ic">🌱</div><div><b>Révéler le potentiel</b><span>Motiver, faire grandir et voir le meilleur de chaque personne.</span></div></div>
+        <div class="take"><div class="ic">👂</div><div><b>Écoute & attention</b><span>Être présent et attentif, aux enfants comme à l'équipe.</span></div></div>
+        <div class="take"><div class="ic">🌍</div><div><b>Ouverture & rencontre</b><span>Échanger avec des personnes aux convictions différentes et élargir son regard.</span></div></div>
+        <div class="take"><div class="ic">🤝</div><div><b>Esprit d'équipe & adaptation</b><span>Préparer, improviser et coopérer, avec un fort sens du service.</span></div></div>
       </div>
     </div>
   </section>
@@ -379,15 +409,20 @@ footer{padding:50px 0 60px;text-align:center}
   <!-- DOCUMENTS -->
   <section id="documents">
     <div class="wrap">
-      <span class="kicker">Ressource</span>
-      <h2>Document du projet</h2>
-      <div class="doc-card">
-        <div class="ic">📄</div>
-        <h3>Rapport / livrable de la MEi</h3>
-        <p>Une fois ton PDF ajouté au projet, je l'intègre ici (lien d'ouverture + aperçu intégré dans la page, comme la soutenance du jumeau numérique).</p>
-        <div class="todo" style="display:inline-block;text-align:left">
-          <div class="t">✏️ À fournir</div>
-          <span>Joins-moi ton PDF (nomme-le par ex. <code>mei-rapport.pdf</code>) et je l'intègre.</span>
+      <span class="kicker">Documents</span>
+      <h2>Ressources du projet</h2>
+      <div class="docs">
+        <div class="doc-mini">
+          <div class="ic">📘</div>
+          <h4>Présentation de la MEI</h4>
+          <p>Le cadre, les objectifs et le déroulé de la Mission Écologie Intégrale à l'ICAM.</p>
+          <a href="mei-presentation.pdf" target="_blank">Ouvrir le PDF</a>
+        </div>
+        <div class="doc-mini">
+          <div class="ic">⭐</div>
+          <h4>Évaluation de la structure d'accueil</h4>
+          <p>Le bilan et l'appréciation rédigés par l'association Saint Joseph des Tanneries.</p>
+          <a href="mei-evaluation-structure.pdf" target="_blank">Ouvrir le PDF</a>
         </div>
       </div>
     </div>
