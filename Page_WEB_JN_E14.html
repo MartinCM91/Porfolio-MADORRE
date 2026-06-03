@@ -368,6 +368,7 @@
   
     /* Texte justifie */
     p,.lead,li,.small,.project-desc{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
+    .card p,.card .small,.card li,.component-grid p,.compact-panel li{text-align:left;hyphens:manual}
 </style>
 </head>
 <body>
@@ -598,14 +599,14 @@
         </div>
 
         <div class="component-grid">
-          <article class="card"><h3>Raspberry Pi 5</h3><p>Unité centrale de pilotage pour l'acquisition, la régulation et l'exécution du jumeau numérique.</p></article>
-          <article class="card"><h3>Pont en H L298N</h3><p>Commande de la résistance chauffante et du ventilateur via signaux GPIO et modulation de puissance.</p></article>
-          <article class="card"><h3>MCP3008</h3><p>Convertisseur analogique-numérique utilisé pour récupérer les mesures des sondes de température en SPI.</p></article>
-          <article class="card"><h3>3 thermistances NTC</h3><p>Mesure de T1, T2 et T3 pour suivre l'entrée d'air, la zone chaude et la sortie du système.</p></article>
-          <article class="card"><h3>Ventilateur 60 × 60 mm</h3><p>Création du flux d'air forcé afin d'améliorer le refroidissement et de tester différentes stratégies de régulation.</p></article>
-          <article class="card"><h3>Résistance chauffante</h3><p>Simulation de la source thermique du processeur dans le démonstrateur physique.</p></article>
-          <article class="card"><h3>Alimentation 12V</h3><p>Source de puissance pour les actionneurs, séparée de l'alimentation logique du Raspberry Pi.</p></article>
-          <article class="card"><h3>Carte de prototypage</h3><p>Assemblage des résistances 10kΩ, distribution des connexions et sécurisation du câblage.</p></article>
+          <article class="card"><div class="avatar">🍓</div><h3>Raspberry Pi 5</h3><p>Unité centrale de pilotage pour l'acquisition, la régulation et l'exécution du jumeau numérique.</p></article>
+          <article class="card"><div class="avatar" style="background:linear-gradient(135deg,rgba(39,211,184,.18),rgba(46,197,255,.12));border-color:rgba(39,211,184,.3);color:var(--teal)">🔀</div><h3>Pont en H L298N</h3><p>Commande de la résistance chauffante et du ventilateur via signaux GPIO et modulation de puissance.</p></article>
+          <article class="card"><div class="avatar">🔢</div><h3>MCP3008</h3><p>Convertisseur analogique-numérique utilisé pour récupérer les mesures des sondes de température en SPI.</p></article>
+          <article class="card"><div class="avatar" style="background:linear-gradient(135deg,rgba(255,184,77,.18),rgba(255,107,53,.14));border-color:rgba(255,184,77,.3);color:var(--amber)">🌡️</div><h3>3 thermistances NTC</h3><p>Mesure de T1, T2 et T3 pour suivre l'entrée d'air, la zone chaude et la sortie du système.</p></article>
+          <article class="card"><div class="avatar" style="background:linear-gradient(135deg,rgba(39,211,184,.18),rgba(46,197,255,.12));border-color:rgba(39,211,184,.3);color:var(--teal)">🌀</div><h3>Ventilateur 60 × 60 mm</h3><p>Création du flux d'air forcé afin d'améliorer le refroidissement et de tester différentes stratégies de régulation.</p></article>
+          <article class="card"><div class="avatar" style="background:linear-gradient(135deg,rgba(255,184,77,.18),rgba(255,107,53,.14));border-color:rgba(255,184,77,.3);color:var(--amber)">🔥</div><h3>Résistance chauffante</h3><p>Simulation de la source thermique du processeur dans le démonstrateur physique.</p></article>
+          <article class="card"><div class="avatar" style="background:linear-gradient(135deg,rgba(255,184,77,.18),rgba(255,107,53,.14));border-color:rgba(255,184,77,.3);color:var(--amber)">🔋</div><h3>Alimentation 12V</h3><p>Source de puissance pour les actionneurs, séparée de l'alimentation logique du Raspberry Pi.</p></article>
+          <article class="card"><div class="avatar">🧩</div><h3>Carte de prototypage</h3><p>Assemblage des résistances 10kΩ, distribution des connexions et sécurisation du câblage.</p></article>
         </div>
 
         <div class="grid-2" style="margin-top:22px;align-items:start">
@@ -677,30 +678,32 @@
     </section>
 
     <section id="logiciel">
-      <div class="container grid-2">
-        <div class="panel">
-          <div class="section-head" style="margin-bottom:8px">
-            <span class="kicker">Logiciel</span>
-            <h2>Supervision, régulation et acquisition</h2>
+      <div class="container grid-2" style="align-items:start">
+        <div style="display:grid;gap:14px;align-content:start">
+          <div class="panel">
+            <div class="section-head" style="margin-bottom:8px">
+              <span class="kicker">Logiciel</span>
+              <h2>Supervision, régulation et acquisition</h2>
+            </div>
+            <p>
+              Le logiciel embarqué a été développé en Python pour regrouper l'ensemble des fonctions du système : lecture des capteurs, affichage temps réel, commande de la résistance chauffante et du ventilateur, sauvegarde des données et exploitation du jumeau numérique.
+            </p>
+            <div class="highlight-list">
+              <li><strong>Interface graphique :</strong> affichage des températures, états système et courbes de suivi.</li>
+              <li><strong>Commande matériel :</strong> contrôle PWM des actionneurs et régulation à consigne.</li>
+              <li><strong>Acquisition continue :</strong> lecture de T1, T2 et T3 via le MCP3008.</li>
+              <li><strong>Sauvegarde :</strong> enregistrement régulier des données pour l'apprentissage et l'analyse.</li>
+              <li><strong>Prédiction :</strong> comparaison entre la température réelle et celle estimée par le modèle.</li>
+            </div>
           </div>
-          <p>
-            Le logiciel embarqué a été développé en Python pour regrouper l'ensemble des fonctions du système : lecture des capteurs, affichage temps réel, commande de la résistance chauffante et du ventilateur, sauvegarde des données et exploitation du jumeau numérique.
-          </p>
-          <div class="highlight-list">
-            <li><strong>Interface graphique :</strong> affichage des températures, états système et courbes de suivi.</li>
-            <li><strong>Commande matériel :</strong> contrôle PWM des actionneurs et régulation à consigne.</li>
-            <li><strong>Acquisition continue :</strong> lecture de T1, T2 et T3 via le MCP3008.</li>
-            <li><strong>Sauvegarde :</strong> enregistrement régulier des données pour l'apprentissage et l'analyse.</li>
-            <li><strong>Prédiction :</strong> comparaison entre la température réelle et celle estimée par le modèle.</li>
-          </div>
-        </div>
 
-        <div style="display:grid;gap:14px">
           <div class="media-card">
             <img src="ecran ihm.png" alt="Écran tactile 7 pouces embarqué pour l'IHM du jumeau numérique" style="cursor:pointer" onclick="window.open(this.src,'_blank')">
             <div class="media-caption">Écran tactile 7" HD embarqué qui héberge l'IHM Python</div>
           </div>
+        </div>
 
+        <div style="display:grid;gap:14px;align-content:start">
           <div class="panel compact-panel">
             <h3>Stack technique</h3>
             <div class="chip-row">
