@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Stage International Auchan × Exotec - Clément MADORRE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#2563eb;--blue-dark:#1e40af;--blue-soft:rgba(37,99,235,.10);
+  --amber:#d97706;--amber-soft:rgba(217,119,6,.10);
+  --sky:#f0f6ff;--paper:#ffffff;--bg:#f7f9fc;
+  --ink:#1e293b;--muted:#64748b;
+  --radius:20px;--shadow:0 4px 24px -8px rgba(30,41,59,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.72;font-size:16px;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 55% 40% at 10% 5%,rgba(37,99,235,.07),transparent 55%),radial-gradient(ellipse 45% 35% at 92% 90%,rgba(217,119,6,.06),transparent 50%)}
+.wrap{width:min(100% - 40px,1100px);margin:0 auto}
+p{text-align:justify;text-justify:inter-word;-webkit-hyphens:auto;hyphens:auto}
+h1,h2,h3{font-family:'Playfair Display',serif}
+
+.topbar{position:sticky;top:0;z-index:100;background:rgba(247,249,252,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(30,41,59,.08)}
+.topbar-inner{width:min(100% - 32px,1100px);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 0}
+.home-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--blue);font-weight:700;font-size:.92rem;background:var(--blue-soft);border:1px solid rgba(37,99,235,.25);padding:9px 16px;border-radius:999px;transition:.2s}
+.home-link:hover{background:rgba(37,99,235,.18);transform:translateY(-1px)}
+.topbar-tag{color:var(--muted);font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px}
+.flag{font-size:1.2rem}
+
+.hero{padding:80px 0 60px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;color:var(--amber);margin-bottom:18px}
+.hero h1{font-weight:700;font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.06;letter-spacing:-.01em;margin-bottom:16px;color:var(--ink)}
+.hero h1 em{font-style:italic;color:var(--blue)}
+.hero .lead{color:var(--muted);font-size:1.08rem;max-width:580px;margin-bottom:28px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:.9rem;padding:12px 24px;border-radius:999px;transition:.2s}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:var(--blue-dark);transform:translateY(-2px)}
+.btn-ghost{color:var(--blue);border:1.5px solid rgba(37,99,235,.3)}.btn-ghost:hover{border-color:var(--blue);transform:translateY(-2px)}
+
+.fiche{background:var(--paper);border:1px solid rgba(30,41,59,.08);border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow)}
+.fiche h3{font-weight:700;font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:10px;color:var(--ink)}
+.fiche-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid rgba(30,41,59,.06)}
+.fiche-row:first-of-type{border-top:none;padding-top:0}
+.fiche-row .ic{font-size:1.1rem;flex:0 0 auto;margin-top:2px}
+.fiche-row .k{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;color:var(--blue);font-weight:700;margin-bottom:1px}
+.fiche-row .v{font-weight:600;font-size:.94rem}
+
+section{padding:60px 0}
+.kicker{display:inline-block;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.7rem;color:var(--blue);margin-bottom:12px}
+.kicker.amber{color:var(--amber)}
+h2{font-weight:700;font-size:clamp(1.8rem,3.4vw,2.5rem);line-height:1.12;margin-bottom:14px;color:var(--ink)}
+.section-intro{color:var(--muted);margin-bottom:32px}
+
+.panel{background:var(--paper);border:1px solid rgba(30,41,59,.08);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow)}
+.panel h3{font-weight:700;font-size:1.2rem;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+
+.media-card{border-radius:var(--radius);overflow:hidden;border:1px solid rgba(30,41,59,.08);box-shadow:var(--shadow);background:var(--paper)}
+.media-card img{width:100%;display:block}
+.media-caption{padding:12px 16px;font-size:.88rem;color:var(--muted);font-weight:600}
+
+.highlight{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--sky);border:1px solid rgba(37,99,235,.1)}
+.highlight .ic{font-size:1.2rem;flex:0 0 auto}
+.highlight b{display:block;font-size:.95rem;margin-bottom:2px;color:var(--ink)}
+.highlight span{color:var(--muted);font-size:.9rem}
+.highlight-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.video-wrap{position:relative;width:100%;padding-top:56.25%;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(30,41,59,.08)}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+.pill-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.pill{padding:10px 18px;border-radius:999px;font-size:.88rem;font-weight:700;background:var(--paper);border:1px solid rgba(30,41,59,.1);color:var(--ink)}
+.pill.blue{border-color:rgba(37,99,235,.3);color:var(--blue);background:var(--blue-soft)}
+.pill.amber{border-color:rgba(217,119,6,.3);color:var(--amber);background:var(--amber-soft)}
+
+.doc-card{background:var(--paper);border:1px solid rgba(30,41,59,.08);border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);text-align:center}
+.doc-card .ic{font-size:2rem;margin-bottom:8px}
+.doc-card h3{font-size:1.15rem;margin-bottom:8px}
+.doc-card p{color:var(--muted);max-width:480px;margin:0 auto 16px;text-align:center}
+.doc-card a{display:inline-block;text-decoration:none;color:var(--blue);font-weight:700;font-size:.9rem;border:1.5px solid rgba(37,99,235,.3);padding:10px 20px;border-radius:999px;transition:.2s}
+.doc-card a:hover{background:var(--blue);color:#fff}
+
+footer{padding:50px 0 60px;text-align:center}
+.foot-card{background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:#fff;border-radius:26px;padding:38px 30px;box-shadow:0 20px 40px -16px rgba(37,99,235,.35)}
+.foot-card h3{font-size:1.4rem;margin-bottom:8px}
+.foot-card p{color:rgba(255,255,255,.75);text-align:center}
+.foot-card .btn{margin-top:20px;background:#fff;color:var(--blue-dark)}
+.foot-card .btn:hover{transform:translateY(-2px)}
+
+@media(max-width:860px){.hero-grid,.grid-2,.highlight-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.panel,.fiche{padding:22px 20px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="home-link">← Retour à l'accueil</a>
+    <div class="topbar-tag"><span class="flag">🇱🇺</span> Stage International - Luxembourg</div>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">✈️ Stage international · Auchan Retail Luxembourg · Été 2024</span>
+      <h1>Appro & logistique <em>Exotec</em></h1>
+      <p class="lead">Stage de 4 mois au sein du service e-commerce de l'entrepôt Auchan Dudelange : approvisionnement de 6 drives, ouverture d'un nouveau magasin et optimisation des flux via les robots Exotec Skypod.</p>
+      <div class="hero-cta">
+        <a href="#video" class="btn btn-blue">▶ Voir la vidéo</a>
+        <a href="#missions" class="btn btn-ghost">Mes missions</a>
+      </div>
+    </div>
+    <div class="fiche">
+      <h3>🌍 Le stage en bref</h3>
+      <div class="fiche-row"><span class="ic">🏢</span><div><span class="k">Entreprise</span><span class="v">Auchan Retail Luxembourg - Entrepôt Dudelange</span></div></div>
+      <div class="fiche-row"><span class="ic">🛒</span><div><span class="k">Service</span><span class="v">E-commerce - Section Approvisionnement</span></div></div>
+      <div class="fiche-row"><span class="ic">📅</span><div><span class="k">Période</span><span class="v">Juin - Septembre 2024 (4 mois)</span></div></div>
+      <div class="fiche-row"><span class="ic">🤖</span><div><span class="k">Technologie</span><span class="v">Robots Exotec Skypod, Méti, maGistor</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid-2">
+    <div class="media-card"><img src="auchan-batiment.png" alt="Entrepôt Auchan Dudelange"><div class="media-caption">Entrepôt Auchan Retail - Dudelange, Luxembourg 🇱🇺</div></div>
+    <div class="media-card"><img src="auchan-exotec.png" alt="Robots Exotec Skypod"><div class="media-caption">Robots Exotec Skypod - mécanisation de la préparation de commandes</div></div>
+  </div>
+</section>
+
+<section id="missions">
+  <div class="wrap">
+    <span class="kicker amber">Missions</span>
+    <h2>Ouverture du MyAuchan Esch-sur-Alzette</h2>
+    <p class="section-intro">Assurer la disponibilité des produits dès le premier jour d'un nouveau magasin, en équilibrant les besoins du lancement avec ceux des 6 drives existants.</p>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>🎯 Le défi</h3>
+        <p>Garantir zéro rupture de stock en rayons sucrés, salés et alcools pour le lancement du 11 septembre, tout en maintenant l'approvisionnement des drives existants. Un contexte de forte concurrence (Leclerc) et d'effectifs réduits en août rendait la mission critique.</p>
+        <div style="margin-top:16px"><div class="media-card"><img src="auchan-carte.png" alt="Carte des zones de livraison Luxembourg"><div class="media-caption">Zones de livraison e-commerce - 6 points de retrait + 3 entrepôts France</div></div></div>
+      </div>
+      <div>
+        <div class="panel" style="margin-bottom:16px">
+          <h3>⚙️ Mon travail</h3>
+          <p>Analyse des historiques de vente, priorisation des produits critiques, passation de commandes via les logiciels Méti et maGistor, gestion des cadenciers et des DLC. D'abord encadré, j'ai rapidement travaillé en autonomie.</p>
+        </div>
+        <div class="media-card" style="margin-bottom:16px"><img src="auchan-meti.png" alt="Interface Méti"><div class="media-caption">Logiciel Méti - gestion des commandes fournisseurs</div></div>
+        <div class="panel">
+          <h3 style="color:var(--blue)">✅ Résultat</h3>
+          <p>Ouverture réussie le 11 septembre 2024 - aucune rupture de stock majeure dans les rayons alimentaires et alcools dès le premier jour. Ma prise en charge des commandes à longue DLC a libéré l'équipe pour les produits à rotation rapide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">Optimisation</span>
+    <h2>Stockage Mezzanine × Exotec</h2>
+    <p class="section-intro">Maximiser la capacité des box Exotec pour 1 233 références de produits sucrés et salés, réduire la fréquence de commandes et libérer du temps pour les équipes.</p>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>🤖 La démarche</h3>
+        <p>En binôme, analyse terrain de chaque référence dans la mezzanine : scan des codes-barres (système MZ.31.02.07.02), mesure physique des PCB (cartons fournisseurs), test de placement dans les box Exotec, et recommandations d'ajustement dans un fichier Excel.</p>
+        <p style="margin-top:12px">1 233 références analysées pour évaluer si un ou deux cartons pouvaient tenir par box, en fonction des dimensions.</p>
+      </div>
+      <div>
+        <div class="media-card" style="margin-bottom:16px"><img src="auchan-magistor.png" alt="Interface maGistor"><div class="media-caption">Logiciel maGistor - suivi des stocks et gestion des péremptions</div></div>
+        <div class="highlight-grid">
+          <div class="highlight"><span class="ic">📊</span><div><b>1 233 références</b><span>analysées sur le terrain</span></div></div>
+          <div class="highlight"><span class="ic">📦</span><div><b>Cadence optimisée</b><span>hebdo → bihebdomadaire</span></div></div>
+          <div class="highlight"><span class="ic">🔍</span><div><b>Scan + mesure</b><span>terrain avec EPI</span></div></div>
+          <div class="highlight"><span class="ic">📈</span><div><b>Coûts logistiques</b><span>réduits par l'optimisation</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <span class="kicker">En vidéo</span>
+    <h2>Le stage en images</h2>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/4T55WvJBvWo" title="Stage Auchan Exotec - Clément MADORRE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">Compétences développées</span>
+    <h2>Ce que ce stage m'a apporté</h2>
+    <div class="pill-row">
+      <span class="pill blue">Logistique e-commerce</span>
+      <span class="pill blue">Supply chain</span>
+      <span class="pill blue">Robot Exotec Skypod</span>
+      <span class="pill amber">Méti</span>
+      <span class="pill amber">maGistor</span>
+      <span class="pill">Gestion des stocks</span>
+      <span class="pill">Approvisionnement</span>
+      <span class="pill">Cadenciers & DLC</span>
+      <span class="pill blue">Optimisation flux</span>
+      <span class="pill">Autonomie</span>
+      <span class="pill">Travail en binôme</span>
+      <span class="pill amber">Analyse terrain</span>
+    </div>
+  </div>
+</section>
+
+<section id="documents">
+  <div class="wrap">
+    <span class="kicker">Document</span>
+    <h2>Rapport de stage</h2>
+    <div class="doc-card">
+      <div class="ic">📄</div>
+      <h3>Rapport de stage - Auchan Retail Luxembourg</h3>
+      <p>Le rapport complet de ma mission : présentation de l'entreprise, détail des missions réalisées et bilan personnel.</p>
+      <a href="auchan-rapport.pdf" target="_blank">Ouvrir le PDF</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-card">
+      <h3>Stage International - Auchan × Exotec</h3>
+      <p>Auchan Retail Luxembourg - Dudelange · Clément MADORRE · Été 2024</p>
+      <a href="index.html" class="btn">← Retour à l'accueil</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
