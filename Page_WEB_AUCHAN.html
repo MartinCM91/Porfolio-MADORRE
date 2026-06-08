@@ -67,7 +67,7 @@ h2{font-weight:700;font-size:clamp(1.8rem,3.4vw,2.5rem);line-height:1.12;margin-
 .highlight .ic{font-size:1.2rem;flex:0 0 auto}
 .highlight b{display:block;font-size:.95rem;margin-bottom:2px;color:var(--ink)}
 .highlight span{color:var(--muted);font-size:.9rem}
-.highlight-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.highlight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 
 .video-wrap{position:relative;width:100%;padding-top:56.25%;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(30,41,59,.08)}
 .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -91,7 +91,7 @@ footer{padding:50px 0 60px;text-align:center}
 .foot-card .btn{margin-top:20px;background:#fff;color:var(--blue-dark)}
 .foot-card .btn:hover{transform:translateY(-2px)}
 
-@media(max-width:860px){.hero-grid,.grid-2,.highlight-grid{grid-template-columns:1fr}}
+@media(max-width:860px){.hero-grid,.grid-2{grid-template-columns:1fr}.highlight-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.panel,.fiche{padding:22px 20px}}
 </style>
 </head>
@@ -129,8 +129,8 @@ footer{padding:50px 0 60px;text-align:center}
 
 <section>
   <div class="wrap grid-2">
-    <div class="media-card"><img src="auchan-batiment.png" alt="Entrepôt Auchan Dudelange"><div class="media-caption">Entrepôt Auchan Retail - Dudelange, Luxembourg 🇱🇺</div></div>
-    <div class="media-card"><img src="auchan-skypod.jpg" alt="Robot Exotec Skypod avec box"><div class="media-caption">Robot Exotec Skypod - préparation de commandes automatisée</div></div>
+    <div class="media-card"><img src="auchan-batiment.png" alt="Entrepôt Auchan Dudelange" style="height:240px;object-fit:cover"><div class="media-caption">Entrepôt Auchan Retail - Dudelange, Luxembourg 🇱🇺</div></div>
+    <div class="media-card"><img src="auchan-exotec.png" alt="Robots Exotec Skypod en entrepôt" style="height:240px;object-fit:cover"><div class="media-caption">Robots Exotec Skypod en action dans l'entrepôt</div></div>
   </div>
 </section>
 
@@ -176,13 +176,13 @@ footer{padding:50px 0 60px;text-align:center}
           <div class="media-card"><img src="auchan-mezzanine.png" alt="Rayonnage mezzanine - zone Crèmerie"><div class="media-caption">Mezzanine de stockage - zone Crèmerie (allées 51-57)</div></div>
           <div class="media-card"><img src="auchan-barcode.jpg" alt="Étiquette code-barres MZ51"><div class="media-caption">Système d'étiquetage MZ51 - scan terrain des emplacements</div></div>
         </div>
-        <div class="highlight-grid">
-          <div class="highlight"><span class="ic">📊</span><div><b>1 233 références</b><span>analysées sur le terrain</span></div></div>
-          <div class="highlight"><span class="ic">📦</span><div><b>Cadence optimisée</b><span>hebdo → bihebdomadaire</span></div></div>
-          <div class="highlight"><span class="ic">🔍</span><div><b>Scan + mesure</b><span>terrain avec EPI</span></div></div>
-          <div class="highlight"><span class="ic">📈</span><div><b>Coûts logistiques</b><span>réduits par l'optimisation</span></div></div>
-        </div>
       </div>
+    </div>
+    <div class="highlight-grid" style="margin-top:22px">
+      <div class="highlight"><span class="ic">📊</span><div><b>1 233 références</b><span>analysées sur le terrain</span></div></div>
+      <div class="highlight"><span class="ic">📦</span><div><b>Cadence optimisée</b><span>hebdo → bihebdomadaire</span></div></div>
+      <div class="highlight"><span class="ic">🔍</span><div><b>Scan + mesure</b><span>terrain avec EPI</span></div></div>
+      <div class="highlight"><span class="ic">📈</span><div><b>Coûts logistiques</b><span>réduits par l'optimisation</span></div></div>
     </div>
   </div>
 </section>
@@ -202,18 +202,18 @@ footer{padding:50px 0 60px;text-align:center}
     <span class="kicker">Compétences développées</span>
     <h2>Ce que ce stage m'a apporté</h2>
     <div class="pill-row">
-      <span class="pill blue">Logistique e-commerce</span>
-      <span class="pill blue">Supply chain</span>
-      <span class="pill blue">Robot Exotec Skypod</span>
-      <span class="pill amber">Méti</span>
-      <span class="pill amber">maGistor</span>
+      <span class="pill">Logistique e-commerce</span>
+      <span class="pill">Supply chain</span>
+      <span class="pill">Robot Exotec Skypod</span>
+      <span class="pill">Méti</span>
+      <span class="pill">maGistor</span>
       <span class="pill">Gestion des stocks</span>
       <span class="pill">Approvisionnement</span>
       <span class="pill">Cadenciers & DLC</span>
-      <span class="pill blue">Optimisation flux</span>
+      <span class="pill">Optimisation flux</span>
       <span class="pill">Autonomie</span>
       <span class="pill">Travail en binôme</span>
-      <span class="pill amber">Analyse terrain</span>
+      <span class="pill">Analyse terrain</span>
     </div>
   </div>
 </section>
